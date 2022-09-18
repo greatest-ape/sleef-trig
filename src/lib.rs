@@ -826,6 +826,10 @@ mod tests {
     #[test]
     fn test_sind4_u35avx() {
         fn prop(a: f64) -> TestResult {
+            if a.is_infinite() || a.is_nan() {
+                return TestResult::discard();
+            }
+
             let (result, reference) = unsafe {
                 let a = _mm256_set1_pd(a);
 
