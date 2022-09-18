@@ -1,0 +1,4 @@
+- Add criterion benchmarks
+- Is panicking on infinity or nan OK?
+- Are functions properly inlined?
+- Does avx need to be enabled per-function?
