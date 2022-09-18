@@ -5,4 +5,13 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[dev-dependencies]
+quickcheck = "1"
+
+# sleef-sys fork with static linking and avx instruction generation
+[dev-dependencies.sleef-sys]
+git = 'https://github.com/greatest-ape/sleef-sys.git'
+rev = "9625d96e64bc83ec18202e206c5fe1e5423df35b" # branch: octasine
+features = ["static"]
+
 [dependencies]

@@ -809,3 +809,42 @@ unsafe fn ddmul_vd2_vd2_vd_avx_sleef(
 unsafe fn vcast_vd2_d_d_avx_sleef(h: f64, l: f64) -> vdouble2_avx_sleef {
     return vd2setxy_vd2_vd_vd_avx_sleef(vcast_vd_d_avx_sleef(h), vcast_vd_d_avx_sleef(l));
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use quickcheck::*;
+
+    unsafe fn to_array(a: __m256d) -> [f64; 4] {
+        let mut arr = [0.0; 4];
+
+        _mm256_storeu_pd(arr.as_mut_ptr(), a);
+
+        arr
+    }
+
+    #[test]
+    fn test_sind4_u35avx() {
+        fn prop(a: f64) -> TestResult {
+            let (result, reference) = unsafe {
+                let a = _mm256_set1_pd(a);
+
+                let result = to_array(super::Sleef_sind4_u35avx(a));
+                let reference = to_array(sleef_sys::Sleef_sind4_u35avx(a));
+
+                (result, reference)
+            };
+
+            let success = result == reference;
+
+            if !success {
+                println!("result: {:?}", result);
+                println!("reference: {:?}", reference);
+            }
+
+            TestResult::from_bool(success)
+        }
+
+        quickcheck(prop as fn(f64) -> TestResult);
+    }
+}
