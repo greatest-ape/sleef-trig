@@ -2,3 +2,4 @@
 - Is panicking on infinity or nan OK?
 - Are functions properly inlined?
 - Does avx need to be enabled per-function?
+- If performance seems to be good, maybe add scalar functions too
