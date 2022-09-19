@@ -109,6 +109,7 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
     return u;
 }
 
+#[inline(always)]
 fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_scalar_sleef {
     let mut ex: vint_purec_scalar_sleef = vilogb2k_vi_vd_purec_scalar_sleef(a);
 
@@ -151,6 +152,7 @@ fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_sc
     }
 }
 
+#[inline(always)]
 fn vmulsign_vd_vd_vd_purec_scalar_sleef(
     x: vdouble_purec_scalar_sleef,
     y: vdouble_purec_scalar_sleef,
@@ -158,10 +160,12 @@ fn vmulsign_vd_vd_vd_purec_scalar_sleef(
     f64::from_bits(x.to_bits() ^ vsignbit_vm_vd_purec_scalar_sleef(y))
 }
 
+#[inline(always)]
 fn vsignbit_vm_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
     d.to_bits() & (-0.0f64).to_bits()
 }
 
+#[inline(always)]
 fn ddadd2_vd2_vd2_vd2_purec_scalar_sleef(
     x: vdouble2_purec_scalar_sleef,
     y: vdouble2_purec_scalar_sleef,
@@ -176,6 +180,7 @@ fn ddadd2_vd2_vd2_vd2_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn ddmul_vd2_vd2_vd_purec_scalar_sleef(
     x: vdouble2_purec_scalar_sleef,
     y: vdouble_purec_scalar_sleef,
@@ -194,10 +199,12 @@ fn ddmul_vd2_vd2_vd_purec_scalar_sleef(
 }
 
 // FIXME: correct?
+#[inline(always)]
 fn vupper_vd_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vdouble_purec_scalar_sleef {
     f64::from_bits(d.to_bits() & ((0xffffffffu64 << 32) | 0xf8000000u64))
 }
 
+#[inline(always)]
 fn ddmul_vd2_vd_vd_purec_scalar_sleef(
     x: vdouble_purec_scalar_sleef,
     y: vdouble_purec_scalar_sleef,
@@ -215,6 +222,7 @@ fn ddmul_vd2_vd_vd_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn ddmul_vd2_vd2_vd2_purec_scalar_sleef(
     x: vdouble2_purec_scalar_sleef,
     y: vdouble2_purec_scalar_sleef,
@@ -232,6 +240,7 @@ fn ddmul_vd2_vd2_vd2_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn ddnormalize_vd2_vd2_purec_scalar_sleef(
     t: vdouble2_purec_scalar_sleef,
 ) -> vdouble2_purec_scalar_sleef {
@@ -243,6 +252,7 @@ fn ddnormalize_vd2_vd2_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn rempisub_purec_scalar_sleef(x: vdouble_purec_scalar_sleef) -> di_t_purec_scalar_sleef {
     let y = (x * 4.0).round();
     let vi = (y - x.round() * 4.0).trunc() as i32; // FIXME: ok to just cast here?
@@ -253,6 +263,7 @@ fn rempisub_purec_scalar_sleef(x: vdouble_purec_scalar_sleef) -> di_t_purec_scal
     }
 }
 
+#[inline(always)]
 fn vilogb2k_vi_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vint_purec_scalar_sleef {
     let mut q = vcastu_vi_vm_purec_scalar_sleef(d.to_bits());
     q = ((q as u32) >> 20) as i32; // FIXME: cast ok?
@@ -263,10 +274,12 @@ fn vilogb2k_vi_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vint_pure
 }
 
 // FIXME: cast ok?
+#[inline(always)]
 fn vcastu_vi_vm_purec_scalar_sleef(vm: vmask_purec_scalar_sleef) -> vint_purec_scalar_sleef {
     (vm >> 32) as i32
 }
 
+#[inline(always)]
 fn vldexp3_vd_vd_vi_purec_scalar_sleef(
     d: vdouble_purec_scalar_sleef,
     q: vint_purec_scalar_sleef,
@@ -276,13 +289,45 @@ fn vldexp3_vd_vd_vi_purec_scalar_sleef(
     )
 }
 
+#[inline(always)]
 fn vcastu_vm_vi_purec_scalar_sleef(vi: vint_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
     (vi as u64) << 32 // FIXME: cast ok?
 }
 
+#[inline(always)]
 fn vor_vm_vo64_vm_purec_scalar_sleef(
     x: vopmask_purec_scalar_sleef,
     y: vmask_purec_scalar_sleef,
 ) -> vmask_purec_scalar_sleef {
     x as u64 | y
+}
+
+#[cfg(test)]
+mod tests {
+    use quickcheck::*;
+
+    #[test]
+    fn test_sind1_u35purec() {
+        fn prop(a: f64) -> TestResult {
+            if a.is_infinite() || a.is_nan() {
+                return TestResult::discard();
+            }
+
+            let result = super::Sleef_sind1_u35purec(a);
+            let reference = unsafe { sleef_sys::Sleef_sind1_u35purec(a) };
+
+            let success = result == reference;
+
+            if !success {
+                println!();
+                println!("input: {}", a);
+                println!("result: {}", result);
+                println!("reference: {}", reference);
+            }
+
+            TestResult::from_bool(success)
+        }
+
+        quickcheck(prop as fn(f64) -> TestResult);
+    }
 }
