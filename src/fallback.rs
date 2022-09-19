@@ -80,7 +80,7 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
         d = ddi_purec_scalar_sleef.dd_purec_scalar_sleef.x
             + ddi_purec_scalar_sleef.dd_purec_scalar_sleef.y;
         d = f64::from_bits(vor_vm_vo64_vm_purec_scalar_sleef(
-            r.is_infinite() as u32 | r.is_nan() as u32, // FIXME: cast ok?
+            visinf_vo_vd_purec_scalar_sleef(r) | visnan_vo_vd_purec_scalar_sleef(r), // FIXME?
             d.to_bits(),
         ));
 
@@ -307,6 +307,46 @@ fn vor_vm_vo64_vm_purec_scalar_sleef(
     x as u64 | y
 }
 
+#[inline(always)]
+fn vand_vm_vo64_vm_purec_scalar_sleef(
+    x: vopmask_purec_scalar_sleef,
+    y: vmask_purec_scalar_sleef,
+) -> vmask_purec_scalar_sleef {
+    return vcast_vm_vo_purec_scalar_sleef(x) & y;
+}
+
+#[inline(always)]
+fn vcast_vm_vo_purec_scalar_sleef(o: vopmask_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
+    o as u64 | ((o as u64) << 32)
+}
+
+#[inline(always)]
+fn veq_vo_vi_vi_purec_scalar_sleef(
+    x: vint_purec_scalar_sleef,
+    y: vint_purec_scalar_sleef,
+) -> vopmask_purec_scalar_sleef {
+    if x == y {
+        !0u32
+    } else {
+        0
+    }
+}
+
+fn visinf_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
+    if d.is_infinite() {
+        !0
+    } else {
+        0
+    }
+}
+fn visnan_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
+    if d.is_nan() {
+        !0
+    } else {
+        0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use quickcheck::*;
@@ -334,27 +374,5 @@ mod tests {
         }
 
         quickcheck(prop as fn(f64) -> TestResult);
-    }
-}
-
-fn vand_vm_vo64_vm_purec_scalar_sleef(
-    x: vopmask_purec_scalar_sleef,
-    y: vmask_purec_scalar_sleef,
-) -> vmask_purec_scalar_sleef {
-    return vcast_vm_vo_purec_scalar_sleef(x) & y;
-}
-
-fn vcast_vm_vo_purec_scalar_sleef(o: vopmask_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
-    o as u64 | ((o as u64) << 32)
-}
-
-fn veq_vo_vi_vi_purec_scalar_sleef(
-    x: vint_purec_scalar_sleef,
-    y: vint_purec_scalar_sleef,
-) -> vopmask_purec_scalar_sleef {
-    if x == y {
-        !0u32
-    } else {
-        0
     }
 }
