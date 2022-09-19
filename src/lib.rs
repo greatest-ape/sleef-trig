@@ -375,13 +375,9 @@ unsafe fn veq64_vo_vm_vm_avx_sleef(x: vmask_avx_sleef, y: vmask_avx_sleef) -> vo
 // FIXME: f64::from(1 << 24) might be incorrect
 #[target_feature(enable = "avx")]
 pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
-    let mut u = d;
-    let mut s = d;
     let r = d;
 
-    let mut ql: __m128i = _mm_setzero_si128();
-
-    if (vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
+    let ql = if (vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
         vabs_vd_vd_avx_sleef(d),
         vcast_vd_d_avx_sleef(15.0),
     ))) != 0
@@ -390,9 +386,11 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
             d,
             vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
         ));
-        ql = vrint_vi_vd_avx_sleef(dql);
+        let ql = vrint_vi_vd_avx_sleef(dql);
         d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.141592653589793116), d);
         d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-1.2246467991473532072e-16), d);
+
+        ql
     } else if vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
         vabs_vd_vd_avx_sleef(d),
         vcast_vd_d_avx_sleef(1e+14),
@@ -408,7 +406,7 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
             vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
             dqh,
         ));
-        ql = vrint_vi_vd_avx_sleef(dql);
+        let ql = vrint_vi_vd_avx_sleef(dql);
 
         d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
         d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
@@ -421,9 +419,11 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
             vcast_vd_d_avx_sleef(-1.2736634327021899816e-24),
             d,
         );
+
+        ql
     } else {
         let mut ddi_avx_sleef: ddi_t_avx_sleef = rempi_avx_sleef(d);
-        ql = vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(3));
+        let mut ql = vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(3));
         ql = vadd_vi_vi_vi_avx_sleef(
             vadd_vi_vi_vi_avx_sleef(ql, ql),
             vsel_vi_vo_vi_vi_avx_sleef(
@@ -461,9 +461,11 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
             vor_vo_vo_vo_avx_sleef(visinf_vo_vd_avx_sleef(r), visnan_vo_vd_avx_sleef(r)),
             vreinterpret_vm_vd_avx_sleef(d),
         ));
-    }
 
-    s = vmul_vd_vd_vd_avx_sleef(d, d);
+        ql
+    };
+
+    let s = vmul_vd_vd_vd_avx_sleef(d, d);
 
     d = vreinterpret_vd_vm_avx_sleef(vxor_vm_vm_vm_avx_sleef(
         vand_vm_vo64_vm_avx_sleef(
@@ -479,7 +481,7 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
     let s2: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s, s);
     let s4: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s2, s2);
 
-    u = vmla_vd_vd_vd_vd_avx_sleef(
+    let mut u = vmla_vd_vd_vd_vd_avx_sleef(
         s4,
         vmla_vd_vd_vd_vd_avx_sleef(
             s2,
