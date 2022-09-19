@@ -42,56 +42,16 @@ struct vdouble2_avx_sleef {
     y: vdouble_avx_sleef,
 }
 
-fn vd2getx_vd_vd2_avx_sleef(v: vdouble2_avx_sleef) -> vdouble_avx_sleef {
-    v.x
-}
-fn vd2gety_vd_vd2_avx_sleef(v: vdouble2_avx_sleef) -> vdouble_avx_sleef {
-    v.y
-}
-
-#[inline(always)]
-unsafe fn vcast_vd2_vd_vd_avx_sleef(
-    h: vdouble_avx_sleef,
-    l: vdouble_avx_sleef,
-) -> vdouble2_avx_sleef {
-    vdouble2_avx_sleef { x: h, y: l }
-}
-
-const fn vd2setxy_vd2_vd_vd_avx_sleef(
-    x: vdouble_avx_sleef,
-    y: vdouble_avx_sleef,
-) -> vdouble2_avx_sleef {
-    vdouble2_avx_sleef { x, y }
-}
-
 #[derive(Clone, Copy)]
 struct di_t_avx_sleef {
     d: vdouble_avx_sleef,
     i: vint_avx_sleef,
 }
 
-#[inline(always)]
-unsafe fn disetdi_di_vd_vi_avx_sleef(d: vdouble_avx_sleef, i: vint_avx_sleef) -> di_t_avx_sleef {
-    di_t_avx_sleef { d, i }
-}
-
 #[derive(Clone, Copy)]
 struct ddi_t_avx_sleef {
     dd_avx_sleef: vdouble2_avx_sleef,
     i: vint_avx_sleef,
-}
-
-#[inline(always)]
-unsafe fn ddigetdd_vd2_ddi_avx_sleef(d: ddi_t_avx_sleef) -> vdouble2_avx_sleef {
-    d.dd_avx_sleef
-}
-
-fn ddisetdd_ddi_ddi_vd2_avx_sleef(
-    mut ddi_avx_sleef: ddi_t_avx_sleef,
-    v: vdouble2_avx_sleef,
-) -> ddi_t_avx_sleef {
-    ddi_avx_sleef.dd_avx_sleef = v;
-    return ddi_avx_sleef;
 }
 
 // FIXME: f64::from(1 << 24) might be incorrect
@@ -162,16 +122,16 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
             vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(1)),
             vcast_vi_i_avx_sleef(1),
         );
-        let mut x: vdouble2_avx_sleef = vcast_vd2_vd_vd_avx_sleef(
-            vmulsign_vd_vd_vd_avx_sleef(
+        let mut x: vdouble2_avx_sleef = vdouble2_avx_sleef {
+            x: vmulsign_vd_vd_vd_avx_sleef(
                 vcast_vd_d_avx_sleef(-3.141592653589793116 * 0.5),
                 ddi_avx_sleef.dd_avx_sleef.x,
             ),
-            vmulsign_vd_vd_vd_avx_sleef(
+            y: vmulsign_vd_vd_vd_avx_sleef(
                 vcast_vd_d_avx_sleef(-1.2246467991473532072e-16 * 0.5),
                 ddi_avx_sleef.dd_avx_sleef.x,
             ),
-        );
+        };
         x = ddadd2_vd2_vd2_vd2_avx_sleef(ddi_avx_sleef.dd_avx_sleef, x);
         ddi_avx_sleef.dd_avx_sleef = vsel_vd2_vo_vd2_vd2_avx_sleef(
             vcast_vo64_vo32_avx_sleef(o),
@@ -267,10 +227,10 @@ unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
     q = vadd_vi_vi_vi_avx_sleef(q, di.i);
     x.x = di.d; //x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
     x = ddnormalize_vd2_vd2_avx_sleef(x);
-    y = vcast_vd2_vd_vd_avx_sleef(
-        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[2..], ex),
-        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[3..], ex),
-    );
+    y = vdouble2_avx_sleef {
+        x: vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[2..], ex),
+        y: vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[3..], ex),
+    };
     y = ddmul_vd2_vd2_vd_avx_sleef(y, a);
     x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
     x = ddnormalize_vd2_vd2_avx_sleef(x);
@@ -415,11 +375,6 @@ unsafe fn vmlapn_vd_vd_vd_vd_avx_sleef(
 #[inline(always)]
 unsafe fn vsub_vd_vd_vd_avx_sleef(x: vdouble_avx_sleef, y: vdouble_avx_sleef) -> vdouble_avx_sleef {
     _mm256_sub_pd(x, y)
-}
-
-#[inline(always)]
-unsafe fn ddigeti_vi_ddi_avx_sleef(d: ddi_t_avx_sleef) -> vint_avx_sleef {
-    d.i
 }
 
 #[inline(always)]
@@ -867,6 +822,55 @@ unsafe fn vcast_vd2_d_d_avx_sleef(h: f64, l: f64) -> vdouble2_avx_sleef {
         y: vcast_vd_d_avx_sleef(l),
     }
 }
+
+/* // Functions that were replaced with struct accesses
+
+fn vd2getx_vd_vd2_avx_sleef(v: vdouble2_avx_sleef) -> vdouble_avx_sleef {
+    v.x
+}
+fn vd2gety_vd_vd2_avx_sleef(v: vdouble2_avx_sleef) -> vdouble_avx_sleef {
+    v.y
+}
+
+#[inline(always)]
+unsafe fn vcast_vd2_vd_vd_avx_sleef(
+    h: vdouble_avx_sleef,
+    l: vdouble_avx_sleef,
+) -> vdouble2_avx_sleef {
+    vdouble2_avx_sleef { x: h, y: l }
+}
+
+const fn vd2setxy_vd2_vd_vd_avx_sleef(
+    x: vdouble_avx_sleef,
+    y: vdouble_avx_sleef,
+) -> vdouble2_avx_sleef {
+    vdouble2_avx_sleef { x, y }
+}
+
+#[inline(always)]
+unsafe fn disetdi_di_vd_vi_avx_sleef(d: vdouble_avx_sleef, i: vint_avx_sleef) -> di_t_avx_sleef {
+    di_t_avx_sleef { d, i }
+}
+
+#[inline(always)]
+unsafe fn ddigetdd_vd2_ddi_avx_sleef(d: ddi_t_avx_sleef) -> vdouble2_avx_sleef {
+    d.dd_avx_sleef
+}
+
+fn ddisetdd_ddi_ddi_vd2_avx_sleef(
+    mut ddi_avx_sleef: ddi_t_avx_sleef,
+    v: vdouble2_avx_sleef,
+) -> ddi_t_avx_sleef {
+    ddi_avx_sleef.dd_avx_sleef = v;
+    return ddi_avx_sleef;
+}
+
+#[inline(always)]
+unsafe fn ddigeti_vi_ddi_avx_sleef(d: ddi_t_avx_sleef) -> vint_avx_sleef {
+    d.i
+}
+
+*/
 
 #[cfg(test)]
 mod tests {
