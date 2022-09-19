@@ -94,6 +94,205 @@ fn ddisetdd_ddi_ddi_vd2_avx_sleef(
     return ddi_avx_sleef;
 }
 
+// FIXME: f64::from(1 << 24) might be incorrect
+#[target_feature(enable = "avx")]
+pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
+    let r = d;
+
+    let ql = if (vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
+        vabs_vd_vd_avx_sleef(d),
+        vcast_vd_d_avx_sleef(15.0),
+    ))) != 0
+    {
+        let dql: vdouble_avx_sleef = vrint_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(
+            d,
+            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
+        ));
+        let ql = vrint_vi_vd_avx_sleef(dql);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.141592653589793116), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-1.2246467991473532072e-16), d);
+
+        ql
+    } else if vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
+        vabs_vd_vd_avx_sleef(d),
+        vcast_vd_d_avx_sleef(1e+14),
+    )) != 0
+    {
+        let mut dqh: vdouble_avx_sleef = vtruncate_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(
+            d,
+            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724 / f64::from(1 << 24)),
+        ));
+        dqh = vmul_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(f64::from(1 << 24)));
+        let dql: vdouble_avx_sleef = vrint_vd_vd_avx_sleef(vmlapn_vd_vd_vd_vd_avx_sleef(
+            d,
+            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
+            dqh,
+        ));
+        let ql = vrint_vi_vd_avx_sleef(dql);
+
+        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-3.1786509424591713469e-08), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.1786509424591713469e-08), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-1.2246467864107188502e-16), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-1.2246467864107188502e-16), d);
+        d = vmla_vd_vd_vd_vd_avx_sleef(
+            vadd_vd_vd_vd_avx_sleef(dqh, dql),
+            vcast_vd_d_avx_sleef(-1.2736634327021899816e-24),
+            d,
+        );
+
+        ql
+    } else {
+        let mut ddi_avx_sleef: ddi_t_avx_sleef = rempi_avx_sleef(d);
+        let mut ql = vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(3));
+        ql = vadd_vi_vi_vi_avx_sleef(
+            vadd_vi_vi_vi_avx_sleef(ql, ql),
+            vsel_vi_vo_vi_vi_avx_sleef(
+                vcast_vo32_vo64_avx_sleef(vgt_vo_vd_vd_avx_sleef(
+                    ddi_avx_sleef.dd_avx_sleef.x,
+                    vcast_vd_d_avx_sleef(0.0),
+                )),
+                vcast_vi_i_avx_sleef(2),
+                vcast_vi_i_avx_sleef(1),
+            ),
+        );
+        ql = vsra_vi_vi_i_avx_sleef!(ql, 2);
+        let o: vopmask_avx_sleef = veq_vo_vi_vi_avx_sleef(
+            vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(1)),
+            vcast_vi_i_avx_sleef(1),
+        );
+        let mut x: vdouble2_avx_sleef = vcast_vd2_vd_vd_avx_sleef(
+            vmulsign_vd_vd_vd_avx_sleef(
+                vcast_vd_d_avx_sleef(-3.141592653589793116 * 0.5),
+                ddi_avx_sleef.dd_avx_sleef.x,
+            ),
+            vmulsign_vd_vd_vd_avx_sleef(
+                vcast_vd_d_avx_sleef(-1.2246467991473532072e-16 * 0.5),
+                ddi_avx_sleef.dd_avx_sleef.x,
+            ),
+        );
+        x = ddadd2_vd2_vd2_vd2_avx_sleef(ddi_avx_sleef.dd_avx_sleef, x);
+        ddi_avx_sleef.dd_avx_sleef = vsel_vd2_vo_vd2_vd2_avx_sleef(
+            vcast_vo64_vo32_avx_sleef(o),
+            x,
+            ddi_avx_sleef.dd_avx_sleef,
+        );
+        d = vadd_vd_vd_vd_avx_sleef(ddi_avx_sleef.dd_avx_sleef.x, ddi_avx_sleef.dd_avx_sleef.y);
+        d = vreinterpret_vd_vm_avx_sleef(vor_vm_vo64_vm_avx_sleef(
+            vor_vo_vo_vo_avx_sleef(visinf_vo_vd_avx_sleef(r), visnan_vo_vd_avx_sleef(r)),
+            vreinterpret_vm_vd_avx_sleef(d),
+        ));
+
+        ql
+    };
+
+    let s = vmul_vd_vd_vd_avx_sleef(d, d);
+
+    d = vreinterpret_vd_vm_avx_sleef(vxor_vm_vm_vm_avx_sleef(
+        vand_vm_vo64_vm_avx_sleef(
+            vcast_vo64_vo32_avx_sleef(veq_vo_vi_vi_avx_sleef(
+                vand_vi_vi_vi_avx_sleef(ql, vcast_vi_i_avx_sleef(1)),
+                vcast_vi_i_avx_sleef(1),
+            )),
+            vreinterpret_vm_vd_avx_sleef(vcast_vd_d_avx_sleef(-0.0)),
+        ),
+        vreinterpret_vm_vd_avx_sleef(d),
+    ));
+
+    let s2: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s, s);
+    let s4: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s2, s2);
+
+    let mut u = vmla_vd_vd_vd_vd_avx_sleef(
+        s4,
+        vmla_vd_vd_vd_vd_avx_sleef(
+            s2,
+            vmla_vd_vd_vd_vd_avx_sleef(
+                s,
+                vcast_vd_d_avx_sleef(-7.97255955009037868891952e-18),
+                vcast_vd_d_avx_sleef(2.81009972710863200091251e-15),
+            ),
+            vmla_vd_vd_vd_vd_avx_sleef(
+                s,
+                vcast_vd_d_avx_sleef(-7.64712219118158833288484e-13),
+                vcast_vd_d_avx_sleef(1.60590430605664501629054e-10),
+            ),
+        ),
+        vmla_vd_vd_vd_vd_avx_sleef(
+            s2,
+            vmla_vd_vd_vd_vd_avx_sleef(
+                s,
+                vcast_vd_d_avx_sleef(-2.50521083763502045810755e-08),
+                vcast_vd_d_avx_sleef(2.75573192239198747630416e-06),
+            ),
+            vmla_vd_vd_vd_vd_avx_sleef(
+                s,
+                vcast_vd_d_avx_sleef(-0.000198412698412696162806809),
+                vcast_vd_d_avx_sleef(0.00833333333333332974823815),
+            ),
+        ),
+    );
+
+    u = vmla_vd_vd_vd_vd_avx_sleef(u, s, vcast_vd_d_avx_sleef(-0.166666666666666657414808));
+
+    u = vadd_vd_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(s, vmul_vd_vd_vd_avx_sleef(u, d)), d);
+
+    u = vsel_vd_vo_vd_vd_avx_sleef(visnegzero_vo_vd_avx_sleef(r), r, u);
+
+    u
+}
+
+// FIXME:
+// - table indexing might not be correct
+#[inline(always)]
+unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
+    let mut ex: vint_avx_sleef = vilogb2k_vi_vd_avx_sleef(a);
+
+    ex = vsub_vi_vi_vi_avx_sleef(ex, vcast_vi_i_avx_sleef(55));
+    let mut q: vint_avx_sleef = vand_vi_vo_vi_avx_sleef(
+        vgt_vo_vi_vi_avx_sleef(ex, vcast_vi_i_avx_sleef(700 - 55)),
+        vcast_vi_i_avx_sleef(-64),
+    );
+    a = vldexp3_vd_vd_vi_avx_sleef(a, q);
+    ex = vandnot_vi_vi_vi_avx_sleef(vsra_vi_vi_i_avx_sleef!(ex, 31), ex);
+    ex = vsll_vi_vi_i_avx_sleef!(ex, 2);
+    let mut x = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp, ex));
+    let mut di: di_t_avx_sleef = rempisub_avx_sleef(x.x);
+    q = di.i; // digeti_vi_di_avx_sleef(di);
+    x.x = di.d; // x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
+    x = ddnormalize_vd2_vd2_avx_sleef(x);
+    let mut y = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[1..], ex));
+    x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
+    di = rempisub_avx_sleef(x.x);
+    q = vadd_vi_vi_vi_avx_sleef(q, di.i);
+    x.x = di.d; //x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
+    x = ddnormalize_vd2_vd2_avx_sleef(x);
+    y = vcast_vd2_vd_vd_avx_sleef(
+        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[2..], ex),
+        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[3..], ex),
+    );
+    y = ddmul_vd2_vd2_vd_avx_sleef(y, a);
+    x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
+    x = ddnormalize_vd2_vd2_avx_sleef(x);
+    x = ddmul_vd2_vd2_vd2_avx_sleef(
+        x,
+        vcast_vd2_d_d_avx_sleef(3.141592653589793116 * 2.0, 1.2246467991473532072e-16 * 2.0),
+    );
+    let o: vopmask_avx_sleef =
+        vlt_vo_vd_vd_avx_sleef(vabs_vd_vd_avx_sleef(a), vcast_vd_d_avx_sleef(0.7));
+    x.x = vsel_vd_vo_vd_vd_avx_sleef(o, a, x.x);
+    x.y = vreinterpret_vd_vm_avx_sleef(vandnot_vm_vo64_vm_avx_sleef(
+        o,
+        vreinterpret_vm_vd_avx_sleef(x.y),
+    ));
+
+    ddi_t_avx_sleef {
+        // ddisetddi_ddi_vd2_vi_avx_sleef(x, q)
+        dd_avx_sleef: x,
+        i: q,
+    }
+}
+
 #[inline(always)]
 unsafe fn vsel_vd2_vo_vd2_vd2_avx_sleef(
     m: vopmask_avx_sleef,
@@ -370,205 +569,6 @@ unsafe fn veq64_vo_vm_vm_avx_sleef(x: vmask_avx_sleef, y: vmask_avx_sleef) -> vo
         _mm256_set1_pd(1.0),
         _CMP_EQ_OQ,
     ));
-}
-
-// FIXME: f64::from(1 << 24) might be incorrect
-#[target_feature(enable = "avx")]
-pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
-    let r = d;
-
-    let ql = if (vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
-        vabs_vd_vd_avx_sleef(d),
-        vcast_vd_d_avx_sleef(15.0),
-    ))) != 0
-    {
-        let dql: vdouble_avx_sleef = vrint_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(
-            d,
-            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
-        ));
-        let ql = vrint_vi_vd_avx_sleef(dql);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.141592653589793116), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-1.2246467991473532072e-16), d);
-
-        ql
-    } else if vtestallones_i_vo64_avx_sleef(vlt_vo_vd_vd_avx_sleef(
-        vabs_vd_vd_avx_sleef(d),
-        vcast_vd_d_avx_sleef(1e+14),
-    )) != 0
-    {
-        let mut dqh: vdouble_avx_sleef = vtruncate_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(
-            d,
-            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724 / f64::from(1 << 24)),
-        ));
-        dqh = vmul_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(f64::from(1 << 24)));
-        let dql: vdouble_avx_sleef = vrint_vd_vd_avx_sleef(vmlapn_vd_vd_vd_vd_avx_sleef(
-            d,
-            vcast_vd_d_avx_sleef(0.318309886183790671537767526745028724),
-            dqh,
-        ));
-        let ql = vrint_vi_vd_avx_sleef(dql);
-
-        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.1415926218032836914), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-3.1786509424591713469e-08), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-3.1786509424591713469e-08), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dqh, vcast_vd_d_avx_sleef(-1.2246467864107188502e-16), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(dql, vcast_vd_d_avx_sleef(-1.2246467864107188502e-16), d);
-        d = vmla_vd_vd_vd_vd_avx_sleef(
-            vadd_vd_vd_vd_avx_sleef(dqh, dql),
-            vcast_vd_d_avx_sleef(-1.2736634327021899816e-24),
-            d,
-        );
-
-        ql
-    } else {
-        let mut ddi_avx_sleef: ddi_t_avx_sleef = rempi_avx_sleef(d);
-        let mut ql = vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(3));
-        ql = vadd_vi_vi_vi_avx_sleef(
-            vadd_vi_vi_vi_avx_sleef(ql, ql),
-            vsel_vi_vo_vi_vi_avx_sleef(
-                vcast_vo32_vo64_avx_sleef(vgt_vo_vd_vd_avx_sleef(
-                    ddi_avx_sleef.dd_avx_sleef.x,
-                    vcast_vd_d_avx_sleef(0.0),
-                )),
-                vcast_vi_i_avx_sleef(2),
-                vcast_vi_i_avx_sleef(1),
-            ),
-        );
-        ql = vsra_vi_vi_i_avx_sleef!(ql, 2);
-        let o: vopmask_avx_sleef = veq_vo_vi_vi_avx_sleef(
-            vand_vi_vi_vi_avx_sleef(ddi_avx_sleef.i, vcast_vi_i_avx_sleef(1)),
-            vcast_vi_i_avx_sleef(1),
-        );
-        let mut x: vdouble2_avx_sleef = vcast_vd2_vd_vd_avx_sleef(
-            vmulsign_vd_vd_vd_avx_sleef(
-                vcast_vd_d_avx_sleef(-3.141592653589793116 * 0.5),
-                ddi_avx_sleef.dd_avx_sleef.x,
-            ),
-            vmulsign_vd_vd_vd_avx_sleef(
-                vcast_vd_d_avx_sleef(-1.2246467991473532072e-16 * 0.5),
-                ddi_avx_sleef.dd_avx_sleef.x,
-            ),
-        );
-        x = ddadd2_vd2_vd2_vd2_avx_sleef(ddi_avx_sleef.dd_avx_sleef, x);
-        ddi_avx_sleef.dd_avx_sleef = vsel_vd2_vo_vd2_vd2_avx_sleef(
-            vcast_vo64_vo32_avx_sleef(o),
-            x,
-            ddi_avx_sleef.dd_avx_sleef,
-        );
-        d = vadd_vd_vd_vd_avx_sleef(ddi_avx_sleef.dd_avx_sleef.x, ddi_avx_sleef.dd_avx_sleef.y);
-        d = vreinterpret_vd_vm_avx_sleef(vor_vm_vo64_vm_avx_sleef(
-            vor_vo_vo_vo_avx_sleef(visinf_vo_vd_avx_sleef(r), visnan_vo_vd_avx_sleef(r)),
-            vreinterpret_vm_vd_avx_sleef(d),
-        ));
-
-        ql
-    };
-
-    let s = vmul_vd_vd_vd_avx_sleef(d, d);
-
-    d = vreinterpret_vd_vm_avx_sleef(vxor_vm_vm_vm_avx_sleef(
-        vand_vm_vo64_vm_avx_sleef(
-            vcast_vo64_vo32_avx_sleef(veq_vo_vi_vi_avx_sleef(
-                vand_vi_vi_vi_avx_sleef(ql, vcast_vi_i_avx_sleef(1)),
-                vcast_vi_i_avx_sleef(1),
-            )),
-            vreinterpret_vm_vd_avx_sleef(vcast_vd_d_avx_sleef(-0.0)),
-        ),
-        vreinterpret_vm_vd_avx_sleef(d),
-    ));
-
-    let s2: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s, s);
-    let s4: vdouble_avx_sleef = vmul_vd_vd_vd_avx_sleef(s2, s2);
-
-    let mut u = vmla_vd_vd_vd_vd_avx_sleef(
-        s4,
-        vmla_vd_vd_vd_vd_avx_sleef(
-            s2,
-            vmla_vd_vd_vd_vd_avx_sleef(
-                s,
-                vcast_vd_d_avx_sleef(-7.97255955009037868891952e-18),
-                vcast_vd_d_avx_sleef(2.81009972710863200091251e-15),
-            ),
-            vmla_vd_vd_vd_vd_avx_sleef(
-                s,
-                vcast_vd_d_avx_sleef(-7.64712219118158833288484e-13),
-                vcast_vd_d_avx_sleef(1.60590430605664501629054e-10),
-            ),
-        ),
-        vmla_vd_vd_vd_vd_avx_sleef(
-            s2,
-            vmla_vd_vd_vd_vd_avx_sleef(
-                s,
-                vcast_vd_d_avx_sleef(-2.50521083763502045810755e-08),
-                vcast_vd_d_avx_sleef(2.75573192239198747630416e-06),
-            ),
-            vmla_vd_vd_vd_vd_avx_sleef(
-                s,
-                vcast_vd_d_avx_sleef(-0.000198412698412696162806809),
-                vcast_vd_d_avx_sleef(0.00833333333333332974823815),
-            ),
-        ),
-    );
-
-    u = vmla_vd_vd_vd_vd_avx_sleef(u, s, vcast_vd_d_avx_sleef(-0.166666666666666657414808));
-
-    u = vadd_vd_vd_vd_avx_sleef(vmul_vd_vd_vd_avx_sleef(s, vmul_vd_vd_vd_avx_sleef(u, d)), d);
-
-    u = vsel_vd_vo_vd_vd_avx_sleef(visnegzero_vo_vd_avx_sleef(r), r, u);
-
-    u
-}
-
-// FIXME:
-// - table indexing might not be correct
-#[inline(always)]
-unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
-    let mut ex: vint_avx_sleef = vilogb2k_vi_vd_avx_sleef(a);
-
-    ex = vsub_vi_vi_vi_avx_sleef(ex, vcast_vi_i_avx_sleef(55));
-    let mut q: vint_avx_sleef = vand_vi_vo_vi_avx_sleef(
-        vgt_vo_vi_vi_avx_sleef(ex, vcast_vi_i_avx_sleef(700 - 55)),
-        vcast_vi_i_avx_sleef(-64),
-    );
-    a = vldexp3_vd_vd_vi_avx_sleef(a, q);
-    ex = vandnot_vi_vi_vi_avx_sleef(vsra_vi_vi_i_avx_sleef!(ex, 31), ex);
-    ex = vsll_vi_vi_i_avx_sleef!(ex, 2);
-    let mut x = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp, ex));
-    let mut di: di_t_avx_sleef = rempisub_avx_sleef(x.x);
-    q = di.i; // digeti_vi_di_avx_sleef(di);
-    x.x = di.d; // x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
-    x = ddnormalize_vd2_vd2_avx_sleef(x);
-    let mut y = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[1..], ex));
-    x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
-    di = rempisub_avx_sleef(x.x);
-    q = vadd_vi_vi_vi_avx_sleef(q, di.i);
-    x.x = di.d; //x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
-    x = ddnormalize_vd2_vd2_avx_sleef(x);
-    y = vcast_vd2_vd_vd_avx_sleef(
-        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[2..], ex),
-        vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[3..], ex),
-    );
-    y = ddmul_vd2_vd2_vd_avx_sleef(y, a);
-    x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
-    x = ddnormalize_vd2_vd2_avx_sleef(x);
-    x = ddmul_vd2_vd2_vd2_avx_sleef(
-        x,
-        vcast_vd2_d_d_avx_sleef(3.141592653589793116 * 2.0, 1.2246467991473532072e-16 * 2.0),
-    );
-    let o: vopmask_avx_sleef =
-        vlt_vo_vd_vd_avx_sleef(vabs_vd_vd_avx_sleef(a), vcast_vd_d_avx_sleef(0.7));
-    x.x = vsel_vd_vo_vd_vd_avx_sleef(o, a, x.x);
-    x.y = vreinterpret_vd_vm_avx_sleef(vandnot_vm_vo64_vm_avx_sleef(
-        o,
-        vreinterpret_vm_vd_avx_sleef(x.y),
-    ));
-
-    ddi_t_avx_sleef {
-        // ddisetddi_ddi_vd2_vi_avx_sleef(x, q)
-        dd_avx_sleef: x,
-        i: q,
-    }
 }
 
 #[inline(always)]
