@@ -59,7 +59,7 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
             } else {
                 1
             };
-        ql = (ql >> 2);
+        ql = ql >> 2;
         let o = (ddi_purec_scalar_sleef.i & 1) == 1;
         let mut x = vdouble2_purec_scalar_sleef {
             x: vmulsign_vd_vd_vd_purec_scalar_sleef(
@@ -89,7 +89,12 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
 
     let s = d * d;
 
-    d = f64::from_bits((((ql & 1) == 1) as u64) & (-0.0f64).to_bits() ^ d.to_bits());
+    d = f64::from_bits(
+        vand_vm_vo64_vm_purec_scalar_sleef(
+            veq_vo_vi_vi_purec_scalar_sleef(ql & 1i32, 1),
+            (-0.0f64).to_bits(),
+        ) ^ (d).to_bits(),
+    );
 
     let s2 = s * s;
     let s4 = s2 * s2;
@@ -329,5 +334,27 @@ mod tests {
         }
 
         quickcheck(prop as fn(f64) -> TestResult);
+    }
+}
+
+fn vand_vm_vo64_vm_purec_scalar_sleef(
+    x: vopmask_purec_scalar_sleef,
+    y: vmask_purec_scalar_sleef,
+) -> vmask_purec_scalar_sleef {
+    return vcast_vm_vo_purec_scalar_sleef(x) & y;
+}
+
+fn vcast_vm_vo_purec_scalar_sleef(o: vopmask_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
+    o as u64 | ((o as u64) << 32)
+}
+
+fn veq_vo_vi_vi_purec_scalar_sleef(
+    x: vint_purec_scalar_sleef,
+    y: vint_purec_scalar_sleef,
+) -> vopmask_purec_scalar_sleef {
+    if x == y {
+        !0u32
+    } else {
+        0
     }
 }
