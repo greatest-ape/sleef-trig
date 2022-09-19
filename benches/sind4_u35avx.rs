@@ -19,7 +19,7 @@ fn bench_sind4_u35avx(c: &mut Criterion) {
 
     let mut group = c.benchmark_group("Sleef_sind4_u35avx");
 
-    for a in [-2.0, 1.2, 30.8].iter() {
+    for a in [1.2, 40.8, 1e+14 + 2.0].iter() {
         group.bench_with_input(BenchmarkId::new("Reference", a), a, |b, a| {
             b.iter(|| unsafe { reference(*a) })
         });
