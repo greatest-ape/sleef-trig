@@ -1,3 +1,5 @@
+#![allow(non_upper_case_globals)]
+
 pub const Sleef_rempitabdp: &[f64] = &[
     0.15915494309189531785,
     1.7916237278037667488e-17,
