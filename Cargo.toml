@@ -7,6 +7,16 @@ edition = "2021"
 name = "sind4_u35avx"
 harness = false
 
+[profile.bench]
+opt-level = 3
+lto = "thin"
+debug = false
+
+[profile.test]
+opt-level = 3
+lto = "thin"
+debug = false
+
 [dev-dependencies]
 quickcheck = "1"
 criterion = "0.4"
@@ -16,10 +26,5 @@ criterion = "0.4"
 git = 'https://github.com/greatest-ape/sleef-sys.git'
 rev = "9625d96e64bc83ec18202e206c5fe1e5423df35b" # branch: octasine
 features = ["static"]
-
-[profile.bench]
-opt-level = 3
-lto = "thin"
-debug = false
 
 [dependencies]

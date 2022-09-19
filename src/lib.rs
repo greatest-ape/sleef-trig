@@ -871,29 +871,37 @@ mod tests {
     use super::*;
     use quickcheck::*;
 
-    unsafe fn to_array(a: __m256d) -> [f64; 4] {
-        let mut arr = [0.0; 4];
-
-        _mm256_storeu_pd(arr.as_mut_ptr(), a);
-
-        arr
-    }
-
     #[test]
     fn test_sind4_u35avx() {
+        if !is_x86_feature_detected!("avx") {
+            panic!("CPU does not support avx");
+        }
+
+        #[target_feature(enable = "avx")]
+        unsafe fn to_array(a: __m256d) -> [f64; 4] {
+            let mut arr = [0.0; 4];
+
+            _mm256_storeu_pd(arr.as_mut_ptr(), a);
+
+            arr
+        }
+
+        #[target_feature(enable = "avx")]
+        unsafe fn reference(a: f64) -> [f64; 4] {
+            to_array(sleef_sys::Sleef_sind4_u35avx(_mm256_set1_pd(a)))
+        }
+
+        #[target_feature(enable = "avx")]
+        unsafe fn port(a: f64) -> [f64; 4] {
+            to_array(super::Sleef_sind4_u35avx(_mm256_set1_pd(a)))
+        }
+
         fn prop(a: f64) -> TestResult {
             if a.is_infinite() || a.is_nan() {
                 return TestResult::discard();
             }
 
-            let (result, reference) = unsafe {
-                let a = _mm256_set1_pd(a);
-
-                let result = to_array(super::Sleef_sind4_u35avx(a));
-                let reference = to_array(sleef_sys::Sleef_sind4_u35avx(a));
-
-                (result, reference)
-            };
+            let (result, reference) = unsafe { (port(a), reference(a)) };
 
             let success = result == reference;
 
