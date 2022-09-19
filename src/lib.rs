@@ -115,7 +115,6 @@ unsafe fn vsel_vd_vo_vd_vd_avx_sleef(
     return _mm256_blendv_pd(y, x, _mm256_castsi256_pd(o));
 }
 
-#[inline]
 #[inline(always)]
 unsafe fn vtestallones_i_vo64_avx_sleef(g: vopmask_avx_sleef) -> i32 {
     _mm_test_all_ones(_mm_and_si128(
@@ -141,13 +140,11 @@ unsafe fn ddadd2_vd2_vd2_vd2_avx_sleef(
     };
 }
 
-#[inline]
 #[inline(always)]
 unsafe fn vlt_vo_vd_vd_avx_sleef(x: vdouble_avx_sleef, y: vdouble_avx_sleef) -> vopmask_avx_sleef {
     vreinterpret_vm_vd_avx_sleef(_mm256_cmp_pd(x, y, _CMP_LT_OQ))
 }
 
-#[inline]
 #[inline(always)]
 unsafe fn vreinterpret_vm_vd_avx_sleef(vd_avx_sleef: vdouble_avx_sleef) -> vmask_avx_sleef {
     _mm256_castpd_si256(vd_avx_sleef)
