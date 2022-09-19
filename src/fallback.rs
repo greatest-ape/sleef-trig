@@ -365,8 +365,8 @@ mod tests {
 
             if !success {
                 println!();
-                println!("input: {}", a);
-                println!("result: {}", result);
+                println!("input:     {}", a);
+                println!("result:    {}", result);
                 println!("reference: {}", reference);
             }
 
