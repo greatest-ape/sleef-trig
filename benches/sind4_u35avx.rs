@@ -4,12 +4,12 @@ use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
 
 #[target_feature(enable = "avx")]
 unsafe fn reference(a: f64) -> __m256d {
-    ::sleef_sys::Sleef_sind4_u35avx(_mm256_set1_pd(a))
+    ::sleef_sys::Sleef_sind4_u35avx(_mm256_set_pd(a, a + 1.0, a + 2.0, a + 3.0))
 }
 
 #[target_feature(enable = "avx")]
 unsafe fn port(a: f64) -> __m256d {
-    ::sleef_port::Sleef_sind4_u35avx(_mm256_set1_pd(a))
+    ::sleef_port::Sleef_sind4_u35avx(_mm256_set_pd(a, a + 1.0, a + 2.0, a + 3.0))
 }
 
 fn bench_sind4_u35avx(c: &mut Criterion) {
