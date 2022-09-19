@@ -1,45 +1,45 @@
+#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
+
 use crate::tables::Sleef_rempitabdp;
 
 type vmask_purec_scalar_sleef = u64;
 type vopmask_purec_scalar_sleef = u32;
 type vdouble_purec_scalar_sleef = f64;
 type vint_purec_scalar_sleef = i32;
-type vfloat_purec_scalar_sleef = f32;
-type vint2_purec_scalar_sleef = i32;
 
-type vint64_purec_scalar_sleef = i64;
-type vuint64_purec_scalar_sleef = u64;
-
+#[derive(Clone, Copy)]
 struct vdouble2_purec_scalar_sleef {
     x: vdouble_purec_scalar_sleef,
     y: vdouble_purec_scalar_sleef,
 }
 
+#[derive(Clone, Copy)]
 struct ddi_t_purec_scalar_sleef {
     dd_purec_scalar_sleef: vdouble2_purec_scalar_sleef,
     i: vint_purec_scalar_sleef,
 }
 
+#[derive(Clone, Copy)]
 struct di_t_purec_scalar_sleef {
     d: vdouble_purec_scalar_sleef,
     i: vint_purec_scalar_sleef,
 }
 
-fn Sleef_sind1_u35purec(mut d: vdouble_purec_scalar_sleef) -> vdouble_purec_scalar_sleef {
+pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
     let r = d;
 
     let ql = if d.abs() < 15.0 {
         let dql = (d * 0.318309886183790671537767526745028724).round();
-        let ql = dql.round().into();
-        d = (dql * -3.141592653589793116 + d);
-        d = (dql * -1.2246467991473532072e-16 + d);
+        let ql = dql.round() as i32; // FIXME: cast ok?
+        d = dql * -3.141592653589793116 + d;
+        d = dql * -1.2246467991473532072e-16 + d;
 
         ql
     } else if d.abs() < 1e+14 {
         let mut dqh = (d * 0.318309886183790671537767526745028724 / f64::from(1 << 24)).trunc();
         dqh = dqh * f64::from(1 << 24);
         let dql = (d * 0.318309886183790671537767526745028724 - dqh).round();
-        let ql = dql.round().into();
+        let ql = dql.round() as i32; // FIXME: cast ok?
 
         d = dqh * -3.1415926218032836914 + d;
         d = dql * -3.1415926218032836914 + d;
@@ -51,7 +51,7 @@ fn Sleef_sind1_u35purec(mut d: vdouble_purec_scalar_sleef) -> vdouble_purec_scal
 
         ql
     } else {
-        let ddi_purec_scalar_sleef = rempi_purec_scalar_sleef(d);
+        let mut ddi_purec_scalar_sleef = rempi_purec_scalar_sleef(d);
         let mut ql = ddi_purec_scalar_sleef.i & 3;
         ql = (ql + ql)
             + if ddi_purec_scalar_sleef.dd_purec_scalar_sleef.x > 0.0 {
@@ -80,7 +80,7 @@ fn Sleef_sind1_u35purec(mut d: vdouble_purec_scalar_sleef) -> vdouble_purec_scal
         d = ddi_purec_scalar_sleef.dd_purec_scalar_sleef.x
             + ddi_purec_scalar_sleef.dd_purec_scalar_sleef.y;
         d = f64::from_bits(vor_vm_vo64_vm_purec_scalar_sleef(
-            r.is_infinite() as i32 | r.is_nan() as i32,
+            r.is_infinite() as u32 | r.is_nan() as u32, // FIXME: cast ok?
             d.to_bits(),
         ));
 
@@ -109,28 +109,28 @@ fn Sleef_sind1_u35purec(mut d: vdouble_purec_scalar_sleef) -> vdouble_purec_scal
     return u;
 }
 
-fn rempi_purec_scalar_sleef(a: vdouble_purec_scalar_sleef) -> ddi_t_purec_scalar_sleef {
+fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_scalar_sleef {
     let mut ex: vint_purec_scalar_sleef = vilogb2k_vi_vd_purec_scalar_sleef(a);
 
     ex = ex - 55;
-    let q = (ex > (700 - 55)) as i32 & (-64);
+    let mut q = (ex > (700 - 55)) as i32 & (-64);
     a = vldexp3_vd_vd_vi_purec_scalar_sleef(a, q);
     ex = (ex >> 31) & (!ex);
-    ex = vsll_vi_vi_i_purec_scalar_sleef(ex, 2);
-    let x = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[ex.into()]);
-    let di: di_t_purec_scalar_sleef = rempisub_purec_scalar_sleef(x.x);
+    ex = ((ex as u32) << 2) as i32; // FIXME: cast ok? vsll_vi_vi_i_purec_scalar_sleef;
+    let mut x = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[ex as usize]);
+    let mut di: di_t_purec_scalar_sleef = rempisub_purec_scalar_sleef(x.x);
     q = di.i;
     x.x = di.d;
     x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
-    let mut y = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[1 + ex.into()]);
+    let mut y = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[1 + ex as usize]);
     x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
     di = rempisub_purec_scalar_sleef(x.x);
     q = q + di.i;
     x.x = di.d;
     x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
     y = vdouble2_purec_scalar_sleef {
-        x: Sleef_rempitabdp[2 + ex.into()],
-        y: Sleef_rempitabdp[3 + ex.into()],
+        x: Sleef_rempitabdp[2 + ex as usize],
+        y: Sleef_rempitabdp[3 + ex as usize],
     };
     y = ddmul_vd2_vd2_vd_purec_scalar_sleef(y, a);
     x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
@@ -189,11 +189,100 @@ fn ddmul_vd2_vd2_vd_purec_scalar_sleef(
 
     vdouble2_purec_scalar_sleef {
         x: s,
-        y: vadd_vd_6vd_purec_scalar_sleef(xh * yh, -s, xl * yh, xh * yl, xl * yl, x.y * y),
+        y: (xh * yh + -s + xl * yh + xh * yl + xl * yl + x.y * y),
     }
 }
 
 // FIXME: correct?
 fn vupper_vd_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vdouble_purec_scalar_sleef {
     f64::from_bits(d.to_bits() & ((0xffffffffu64 << 32) | 0xf8000000u64))
+}
+
+fn ddmul_vd2_vd_vd_purec_scalar_sleef(
+    x: vdouble_purec_scalar_sleef,
+    y: vdouble_purec_scalar_sleef,
+) -> vdouble2_purec_scalar_sleef {
+    let xh = vupper_vd_vd_purec_scalar_sleef(x);
+    let xl = x - xh;
+    let yh = vupper_vd_vd_purec_scalar_sleef(y);
+    let yl = y - yh;
+
+    let s = x * y;
+
+    vdouble2_purec_scalar_sleef {
+        x: s,
+        y: (xh * yh + -s + xl * yh + xh * yl + xl * yl),
+    }
+}
+
+fn ddmul_vd2_vd2_vd2_purec_scalar_sleef(
+    x: vdouble2_purec_scalar_sleef,
+    y: vdouble2_purec_scalar_sleef,
+) -> vdouble2_purec_scalar_sleef {
+    let xh = vupper_vd_vd_purec_scalar_sleef(x.x);
+    let xl = x.x - xh;
+    let yh = vupper_vd_vd_purec_scalar_sleef(y.x);
+    let yl = y.x - yh;
+
+    let s = x.x * y.x;
+
+    vdouble2_purec_scalar_sleef {
+        x: s,
+        y: (xh * yh + -s + xl * yh + xh * yl + xl * yl + x.x * y.y + x.y * y.x),
+    }
+}
+
+fn ddnormalize_vd2_vd2_purec_scalar_sleef(
+    t: vdouble2_purec_scalar_sleef,
+) -> vdouble2_purec_scalar_sleef {
+    let s = t.x + t.y;
+
+    vdouble2_purec_scalar_sleef {
+        x: s,
+        y: t.x - s + t.y,
+    }
+}
+
+fn rempisub_purec_scalar_sleef(x: vdouble_purec_scalar_sleef) -> di_t_purec_scalar_sleef {
+    let y = (x * 4.0).round();
+    let vi = (y - x.round() * 4.0).trunc() as i32; // FIXME: ok to just cast here?
+
+    di_t_purec_scalar_sleef {
+        d: x - y * 0.25,
+        i: vi,
+    }
+}
+
+fn vilogb2k_vi_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vint_purec_scalar_sleef {
+    let mut q = vcastu_vi_vm_purec_scalar_sleef(d.to_bits());
+    q = ((q as u32) >> 20) as i32; // FIXME: cast ok?
+    q = q & 0x7ff;
+    q = q - 0x3ff;
+
+    q
+}
+
+// FIXME: cast ok?
+fn vcastu_vi_vm_purec_scalar_sleef(vm: vmask_purec_scalar_sleef) -> vint_purec_scalar_sleef {
+    (vm >> 32) as i32
+}
+
+fn vldexp3_vd_vd_vi_purec_scalar_sleef(
+    d: vdouble_purec_scalar_sleef,
+    q: vint_purec_scalar_sleef,
+) -> vdouble_purec_scalar_sleef {
+    f64::from_bits(
+        d.to_bits() + vcastu_vm_vi_purec_scalar_sleef(((q as u32) << 20) as i32), // FIXME: cast ok?
+    )
+}
+
+fn vcastu_vm_vi_purec_scalar_sleef(vi: vint_purec_scalar_sleef) -> vmask_purec_scalar_sleef {
+    (vi as u64) << 32 // FIXME: cast ok?
+}
+
+fn vor_vm_vo64_vm_purec_scalar_sleef(
+    x: vopmask_purec_scalar_sleef,
+    y: vmask_purec_scalar_sleef,
+) -> vmask_purec_scalar_sleef {
+    x as u64 | y
 }
