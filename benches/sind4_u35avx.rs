@@ -1,29 +1,35 @@
 use core::arch::x86_64::*;
-use criterion::{criterion_group, criterion_main, Criterion, black_box};
 
-fn bench_custom(c: &mut Criterion) {
+use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion};
+
+#[target_feature(enable = "avx")]
+unsafe fn reference(a: f64) -> __m256d {
+    ::sleef_sys::Sleef_sind4_u35avx(_mm256_set1_pd(a))
+}
+
+#[target_feature(enable = "avx")]
+unsafe fn port(a: f64) -> __m256d {
+    ::sleef_port::Sleef_sind4_u35avx(_mm256_set1_pd(a))
+}
+
+fn bench_sind4_u35avx(c: &mut Criterion) {
     if !is_x86_feature_detected!("avx") {
         panic!("CPU does not support avx");
     }
 
-    c.bench_function("ported Sleef_sind4_u35avx", |b| b.iter(||
-        unsafe {
-            ::sleef_port::Sleef_sind4_u35avx(black_box(_mm256_set1_pd(40.0)))
-        }
-    ));
-}
+    let mut group = c.benchmark_group("Sleef_sind4_u35avx");
 
-fn bench_reference(c: &mut Criterion) {
-    if !is_x86_feature_detected!("avx") {
-        panic!("CPU does not support avx");
+    for a in [-2.0, 1.2, 30.8].iter() {
+        group.bench_with_input(BenchmarkId::new("Reference", a), a, |b, a| {
+            b.iter(|| unsafe { reference(*a) })
+        });
+        group.bench_with_input(BenchmarkId::new("Ported", a), a, |b, a| {
+            b.iter(|| unsafe { port(*a) })
+        });
     }
 
-    c.bench_function("reference Sleef_sind4_u35avx", |b| b.iter(||
-        unsafe {
-            ::sleef_sys::Sleef_sind4_u35avx(black_box(_mm256_set1_pd(40.0)))
-        }
-    ));
+    group.finish();
 }
 
-criterion_group!(benches, bench_reference, bench_custom);
+criterion_group!(benches, bench_sind4_u35avx);
 criterion_main!(benches);
