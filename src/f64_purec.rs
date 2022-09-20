@@ -64,7 +64,11 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
                 1
             };
         ql = ql >> 2;
-        let o = veq_vo_vi_vi_purec_scalar_sleef(ddi_purec_scalar_sleef.i & 1, 1);
+        let o = if ddi_purec_scalar_sleef.i & 1 == 1 {
+            !0
+        } else {
+            0
+        };
         let mut x = vdouble2_purec_scalar_sleef {
             x: vmulsign_vd_vd_vd_purec_scalar_sleef(
                 -3.141592653589793116 * 0.5,
@@ -84,7 +88,7 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
         d = ddi_purec_scalar_sleef.dd_purec_scalar_sleef.x
             + ddi_purec_scalar_sleef.dd_purec_scalar_sleef.y;
         d = f64::from_bits(vor_vm_vo64_vm_purec_scalar_sleef(
-            visinf_vo_vd_purec_scalar_sleef(r) | visnan_vo_vd_purec_scalar_sleef(r),
+            if r.is_infinite() | r.is_nan() { !0 } else { 0 },
             d.to_bits(),
         ));
 
@@ -95,7 +99,7 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
 
     d = f64::from_bits(
         vand_vm_vo64_vm_purec_scalar_sleef(
-            veq_vo_vi_vi_purec_scalar_sleef(ql & 1i32, 1),
+            if ql & 1i32 == 1 { !0 } else { 0 },
             (-0.0f64).to_bits(),
         ) ^ (d).to_bits(),
     );
@@ -170,8 +174,11 @@ fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_sc
             y: 1.2246467991473532072e-16 * 2.0,
         },
     );
-    let o: vopmask_purec_scalar_sleef =
-        vlt_vo_vd_vd_purec_scalar_sleef(vabs_vd_vd_purec_scalar_sleef(a), 0.7);
+    let o = if vabs_vd_vd_purec_scalar_sleef(a) < 0.7 {
+        !0
+    } else {
+        0
+    };
     x.x = if o != 0 { a } else { x.x };
     x.y = f64::from_bits(vandnot_vm_vo64_vm_purec_scalar_sleef(o, x.y.to_bits()));
     ddi_t_purec_scalar_sleef {
@@ -344,35 +351,6 @@ fn vcast_vm_vo_purec_scalar_sleef(o: vopmask_purec_scalar_sleef) -> vmask_purec_
 }
 
 #[inline(always)]
-fn veq_vo_vi_vi_purec_scalar_sleef(
-    x: vint_purec_scalar_sleef,
-    y: vint_purec_scalar_sleef,
-) -> vopmask_purec_scalar_sleef {
-    if x == y {
-        !0u32
-    } else {
-        0
-    }
-}
-
-#[inline(always)]
-fn visinf_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
-    if d.is_infinite() {
-        !0
-    } else {
-        0
-    }
-}
-#[inline(always)]
-fn visnan_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
-    if d.is_nan() {
-        !0
-    } else {
-        0
-    }
-}
-
-#[inline(always)]
 fn vsel_vd2_vo_vd2_vd2_purec_scalar_sleef(
     m: vopmask_purec_scalar_sleef,
     x: vdouble2_purec_scalar_sleef,
@@ -394,18 +372,6 @@ fn vsel_vd_vo_vd_vd_purec_scalar_sleef(
         x
     } else {
         y
-    }
-}
-
-#[inline(always)]
-fn vlt_vo_vd_vd_purec_scalar_sleef(
-    x: vdouble_purec_scalar_sleef,
-    y: vdouble_purec_scalar_sleef,
-) -> vopmask_purec_scalar_sleef {
-    if x < y {
-        !0
-    } else {
-        0
     }
 }
 
