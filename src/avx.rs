@@ -2,7 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 //        (See http://www.boost.org/LICENSE_1_0.txt)
 
-#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
+#![allow(non_camel_case_types, non_snake_case)]
 
 use core::arch::x86_64::*;
 
@@ -203,8 +203,6 @@ pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
     u
 }
 
-// FIXME:
-// - table indexing might not be correct
 #[inline(always)]
 unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
     let mut ex: vint_avx_sleef = vilogb2k_vi_vd_avx_sleef(a);
@@ -219,14 +217,14 @@ unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
     ex = vsll_vi_vi_i_avx_sleef!(ex, 2);
     let mut x = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp, ex));
     let mut di: di_t_avx_sleef = rempisub_avx_sleef(x.x);
-    q = di.i; // digeti_vi_di_avx_sleef(di);
-    x.x = di.d; // x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
+    q = di.i;
+    x.x = di.d;
     x = ddnormalize_vd2_vd2_avx_sleef(x);
     let mut y = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[1..], ex));
     x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
     di = rempisub_avx_sleef(x.x);
     q = vadd_vi_vi_vi_avx_sleef(q, di.i);
-    x.x = di.d; //x = vd2setx_vd2_vd2_vd_avx_sleef(x, di.d);
+    x.x = di.d;
     x = ddnormalize_vd2_vd2_avx_sleef(x);
     y = vdouble2_avx_sleef {
         x: vgather_vd_p_vi_avx_sleef(&Sleef_rempitabdp[2..], ex),
@@ -248,7 +246,6 @@ unsafe fn rempi_avx_sleef(mut a: vdouble_avx_sleef) -> ddi_t_avx_sleef {
     ));
 
     ddi_t_avx_sleef {
-        // ddisetddi_ddi_vd2_vi_avx_sleef(x, q)
         dd_avx_sleef: x,
         i: q,
     }
@@ -669,7 +666,6 @@ unsafe fn ddmul_vd2_vd2_vd2_avx_sleef(
     }
 }
 
-// FIXME: overflowing literals correct?
 #[allow(overflowing_literals)]
 #[inline(always)]
 unsafe fn vupper_vd_vd_avx_sleef(d: vdouble_avx_sleef) -> vdouble_avx_sleef {
