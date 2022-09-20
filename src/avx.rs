@@ -1,3 +1,7 @@
+//   Copyright Naoki Shibata and contributors 2010 - 2021.
+// Distributed under the Boost Software License, Version 1.0.
+//        (See http://www.boost.org/LICENSE_1_0.txt)
+
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use core::arch::x86_64::*;
@@ -52,7 +56,6 @@ struct ddi_t_avx_sleef {
     i: vint_avx_sleef,
 }
 
-// FIXME: f64::from(1 << 24) might be incorrect
 #[target_feature(enable = "avx")]
 pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
     let r = d;

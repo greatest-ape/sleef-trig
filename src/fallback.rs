@@ -1,3 +1,7 @@
+//   Copyright Naoki Shibata and contributors 2010 - 2021.
+// Distributed under the Boost Software License, Version 1.0.
+//        (See http://www.boost.org/LICENSE_1_0.txt)
+
 #![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 
 use crate::tables::Sleef_rempitabdp;

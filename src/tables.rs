@@ -1,3 +1,7 @@
+//   Copyright Naoki Shibata and contributors 2010 - 2021.
+// Distributed under the Boost Software License, Version 1.0.
+//        (See http://www.boost.org/LICENSE_1_0.txt)
+
 #![allow(non_upper_case_globals)]
 
 pub const Sleef_rempitabdp: &[f64] = &[
