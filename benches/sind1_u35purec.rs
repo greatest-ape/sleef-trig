@@ -8,7 +8,7 @@ fn bench_sind1_u35purec(c: &mut Criterion) {
             b.iter(|| unsafe { ::sleef_sys::Sleef_sind1_u35purec(*a) })
         });
         group.bench_with_input(BenchmarkId::new("Ported", a), a, |b, a| {
-            b.iter(|| ::sleef_port::Sleef_sind1_u35purec(*a))
+            b.iter(|| ::sleef_sind::Sleef_sind1_u35purec(*a))
         });
     }
 

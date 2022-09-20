@@ -5,7 +5,7 @@
 			"type": "lldb",
 			"request": "launch",
 			"cargo": {
-			    "args": ["build", "--bin=sleef-port"],
+			    "args": ["build", "--bin=sleef-sind"],
 			    "problemMatcher": "$rustc",
 			}
 		    }

@@ -1,10 +1,10 @@
 [package]
-name = "sleef-port"
+name = "sleef-sind"
 version = "0.1.0"
 edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
-description = "Port of certain sleef.org functions"
+description = "Port of a few sleef.org sine functions"
 
 [[bench]]
 name = "sind4_u35avx"
