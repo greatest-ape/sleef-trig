@@ -4,7 +4,7 @@
 
 #![allow(non_camel_case_types, non_snake_case)]
 
-use crate::tables::Sleef_rempitabdp;
+use crate::f64_tables::Sleef_rempitabdp;
 
 type vmask_purec_scalar_sleef = u64;
 type vopmask_purec_scalar_sleef = u32;

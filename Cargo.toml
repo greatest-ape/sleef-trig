@@ -1,10 +1,10 @@
 [package]
-name = "sleef-sind"
+name = "sleef-trig"
 version = "0.1.0"
 edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
-description = "Port of a few sleef.org sine functions"
+description = "Port of a few sleef.org trigonometric functions"
 
 [[bench]]
 name = "sind4_u35avx"
@@ -16,6 +16,10 @@ harness = false
 
 [[bench]]
 name = "sinf1_u35purec_range125"
+harness = false
+
+[[bench]]
+name = "cosf1_u35purec_range125"
 harness = false
 
 [profile.bench]

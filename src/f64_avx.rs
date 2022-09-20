@@ -6,7 +6,7 @@
 
 use core::arch::x86_64::*;
 
-use super::tables::*;
+use super::f64_tables::*;
 
 type vmask_avx_sleef = __m256i;
 type vopmask_avx_sleef = __m256i;

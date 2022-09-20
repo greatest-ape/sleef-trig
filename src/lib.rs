@@ -1,10 +1,10 @@
-mod sind1_u35purec;
+mod f32_purec;
 #[cfg(target_arch = "x86_64")]
-mod sind4_u35avx;
-mod sinf1_u35purec_range125;
-mod tables;
+mod f64_avx;
+mod f64_purec;
+mod f64_tables;
 
-pub use sind1_u35purec::Sleef_sind1_u35purec;
+pub use f32_purec::{Sleef_cosf1_u35purec_range125, Sleef_sinf1_u35purec_range125};
 #[cfg(target_arch = "x86_64")]
-pub use sind4_u35avx::Sleef_sind4_u35avx;
-pub use sinf1_u35purec_range125::Sleef_sinf1_u35purec_range125;
+pub use f64_avx::Sleef_sind4_u35avx;
+pub use f64_purec::Sleef_sind1_u35purec;
