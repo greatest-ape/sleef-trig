@@ -1,3 +1,9 @@
+//   Copyright Naoki Shibata and contributors 2010 - 2021.
+// Distributed under the Boost Software License, Version 1.0.
+//        (See http://www.boost.org/LICENSE_1_0.txt)
+
+#![allow(non_snake_case)]
+
 /// Like Sleef_sinf1_u35purec but only valid for d where d.abs() < 125.0
 pub fn Sleef_sinf1_u35purec_range125(mut d: f32) -> f32 {
     let r = d;
