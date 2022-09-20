@@ -741,16 +741,15 @@ unsafe fn vneg_vd_vd_avx_sleef(d: vdouble_avx_sleef) -> vdouble_avx_sleef {
     return _mm256_xor_pd(_mm256_set1_pd(-0.0), d);
 }
 
-// FIXME: might not be correct
 #[inline(always)]
-unsafe fn vgather_vd_p_vi_avx_sleef(ptr: &[f64], vi: vint_avx_sleef) -> vdouble_avx_sleef {
+unsafe fn vgather_vd_p_vi_avx_sleef(slice: &[f64], vi: vint_avx_sleef) -> vdouble_avx_sleef {
     let mut a = [0; 1 << 2];
     vstoreu_v_p_vi_avx_sleef(a.as_mut_ptr(), vi);
     return _mm256_set_pd(
-        ptr[a[3] as usize],
-        ptr[a[2] as usize],
-        ptr[a[1] as usize],
-        ptr[a[0] as usize],
+        slice.get(a[3] as usize).copied().unwrap_or(f64::NAN),
+        slice.get(a[2] as usize).copied().unwrap_or(f64::NAN),
+        slice.get(a[1] as usize).copied().unwrap_or(f64::NAN),
+        slice.get(a[0] as usize).copied().unwrap_or(f64::NAN),
     );
 }
 
@@ -901,13 +900,12 @@ mod tests {
         }
 
         fn prop(a: f64) -> TestResult {
-            if a.is_infinite() || a.is_nan() {
-                return TestResult::discard();
-            }
-
             let (result, reference) = unsafe { (port(a), reference(a)) };
 
-            let success = result == reference;
+            let success = result
+                .into_iter()
+                .zip(reference)
+                .all(|(a, b)| a == b || (a.is_nan() && b.is_nan()));
 
             if !success {
                 println!("result: {:?}", result);
