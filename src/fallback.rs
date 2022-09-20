@@ -123,20 +123,38 @@ fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_sc
     a = vldexp3_vd_vd_vi_purec_scalar_sleef(a, q);
     ex = ex & !(ex >> 31);
     ex = ex << 2;
-    let mut x = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[ex as usize]);
+    let mut x = ddmul_vd2_vd_vd_purec_scalar_sleef(
+        a,
+        Sleef_rempitabdp
+            .get(ex as usize)
+            .copied()
+            .unwrap_or(f64::NAN),
+    );
     let mut di: di_t_purec_scalar_sleef = rempisub_purec_scalar_sleef(x.x);
     q = di.i;
     x.x = di.d;
     x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
-    let mut y = ddmul_vd2_vd_vd_purec_scalar_sleef(a, Sleef_rempitabdp[1 + ex as usize]);
+    let mut y = ddmul_vd2_vd_vd_purec_scalar_sleef(
+        a,
+        Sleef_rempitabdp
+            .get(1 + ex as usize)
+            .copied()
+            .unwrap_or(f64::NAN),
+    );
     x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
     di = rempisub_purec_scalar_sleef(x.x);
     q = q + di.i;
     x.x = di.d;
     x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
     y = vdouble2_purec_scalar_sleef {
-        x: Sleef_rempitabdp[2 + ex as usize],
-        y: Sleef_rempitabdp[3 + ex as usize],
+        x: Sleef_rempitabdp
+            .get(2 + ex as usize)
+            .copied()
+            .unwrap_or(f64::NAN),
+        y: Sleef_rempitabdp
+            .get(3 + ex as usize)
+            .copied()
+            .unwrap_or(f64::NAN),
     };
     y = ddmul_vd2_vd2_vd_purec_scalar_sleef(y, a);
     x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
@@ -289,7 +307,9 @@ fn vldexp3_vd_vd_vi_purec_scalar_sleef(
     q: vint_purec_scalar_sleef,
 ) -> vdouble_purec_scalar_sleef {
     f64::from_bits(
-        d.to_bits().overflowing_add(vcastu_vm_vi_purec_scalar_sleef(((q as u32) << 20) as i32)).0,
+        d.to_bits()
+            .overflowing_add(vcastu_vm_vi_purec_scalar_sleef(((q as u32) << 20) as i32))
+            .0,
     )
 }
 
@@ -405,14 +425,10 @@ mod tests {
     #[test]
     fn test_sind1_u35purec() {
         fn prop(a: f64) -> TestResult {
-            if a.is_infinite() || a.is_nan() {
-                return TestResult::discard();
-            }
-
             let result = super::Sleef_sind1_u35purec(a);
             let reference = unsafe { sleef_sys::Sleef_sind1_u35purec(a) };
 
-            let success = result == reference;
+            let success = result == reference || (result.is_nan() && reference.is_nan());
 
             if !success {
                 println!();
