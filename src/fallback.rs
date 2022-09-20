@@ -333,6 +333,7 @@ fn veq_vo_vi_vi_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn visinf_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
     if d.is_infinite() {
         !0
@@ -340,6 +341,7 @@ fn visinf_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_pur
         0
     }
 }
+#[inline(always)]
 fn visnan_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_purec_scalar_sleef {
     if d.is_nan() {
         !0
@@ -348,6 +350,7 @@ fn visnan_vo_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vopmask_pur
     }
 }
 
+#[inline(always)]
 fn vsel_vd2_vo_vd2_vd2_purec_scalar_sleef(
     m: vopmask_purec_scalar_sleef,
     x: vdouble2_purec_scalar_sleef,
@@ -359,6 +362,7 @@ fn vsel_vd2_vo_vd2_vd2_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn vsel_vd_vo_vd_vd_purec_scalar_sleef(
     o: vopmask_purec_scalar_sleef,
     x: vdouble_purec_scalar_sleef,
@@ -371,6 +375,7 @@ fn vsel_vd_vo_vd_vd_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn vlt_vo_vd_vd_purec_scalar_sleef(
     x: vdouble_purec_scalar_sleef,
     y: vdouble_purec_scalar_sleef,
@@ -382,10 +387,12 @@ fn vlt_vo_vd_vd_purec_scalar_sleef(
     }
 }
 
+#[inline(always)]
 fn vabs_vd_vd_purec_scalar_sleef(d: vdouble_purec_scalar_sleef) -> vdouble_purec_scalar_sleef {
     f64::from_bits(d.to_bits() & 0x7fffffff_ffffffff)
 }
 
+#[inline(always)]
 fn vandnot_vm_vo64_vm_purec_scalar_sleef(
     x: vopmask_purec_scalar_sleef,
     y: vmask_purec_scalar_sleef,
