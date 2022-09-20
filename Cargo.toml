@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
-license-file = "LICENSE.txt"
 description = "Port of certain sleef.org functions"
 
 [[bench]]
