@@ -7,6 +7,10 @@ edition = "2021"
 name = "sind4_u35avx"
 harness = false
 
+[[bench]]
+name = "sind1_u35purec"
+harness = false
+
 [profile.bench]
 opt-level = 3
 lto = "thin"
