@@ -1,0 +1,13 @@
+{
+	"configurations": [
+		{
+			"name": "Build and debug main binary",
+			"type": "lldb",
+			"request": "launch",
+			"cargo": {
+			    "args": ["build", "--bin=sleef-port"],
+			    "problemMatcher": "$rustc",
+			}
+		    }
+	]
+}
