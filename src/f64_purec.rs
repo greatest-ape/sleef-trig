@@ -122,7 +122,8 @@ pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
     return u;
 }
 
-#[inline(always)]
+#[inline]
+#[cold]
 fn rempi_purec_scalar_sleef(mut a: vdouble_purec_scalar_sleef) -> ddi_t_purec_scalar_sleef {
     let mut ex: vint_purec_scalar_sleef = vilogb2k_vi_vd_purec_scalar_sleef(a);
 
