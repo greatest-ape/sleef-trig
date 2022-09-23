@@ -14,11 +14,10 @@ Additionally, a couple of functions only valid for inputs between -125.0 and
 
 ## Usage
 
-To use this crate, add it as a dependency in your `Cargo.toml` file.
+To use this crate, add it to your `Cargo.toml` file as a dependency.
 
 For optimal performance, compile sleef-trig with `codegen-units = 1` by adding
-the following to `Cargo.toml` (one statement for each performance sensitive
-profile):
+the following to `Cargo.toml` (once for each performance sensitive profile):
 
 ```toml
 [profile.release.package.sleef-trig]
