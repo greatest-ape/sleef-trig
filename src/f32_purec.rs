@@ -16,12 +16,7 @@ pub fn Sleef_sinf1_u35purec_range125(mut d: f32) -> f32 {
 
     let s = d * d;
 
-    d = vreinterpret_vf_vm_purec_scalar_sleef(
-        vand_vm_vo32_vm_purec_scalar_sleef(
-            if (q & 1) == 1 { !0 } else { 0 },
-            vreinterpret_vm_vf_purec_scalar_sleef(-0.0f32),
-        ) ^ vreinterpret_vm_vf_purec_scalar_sleef(d),
-    );
+    d = f32::from_bits(((if (q & 1) == 1 { !0 } else { 0 }) & (-0.0f32).to_bits()) ^ d.to_bits());
 
     let mut u = 2.6083159809786593541503e-06f32;
     u = u * s + -0.0001981069071916863322258f32;
@@ -47,12 +42,7 @@ pub fn Sleef_cosf1_u35purec_range125(mut d: f32) -> f32 {
 
     let s = d * d;
 
-    d = vreinterpret_vf_vm_purec_scalar_sleef(
-        vand_vm_vo32_vm_purec_scalar_sleef(
-            if (q & 2) == 0 { !0 } else { 0 },
-            vreinterpret_vm_vf_purec_scalar_sleef(-0.0f32),
-        ) ^ vreinterpret_vm_vf_purec_scalar_sleef(d),
-    );
+    d = f32::from_bits(((if (q & 2) == 0 { !0 } else { 0 }) & (-0.0f32).to_bits()) ^ d.to_bits());
 
     u = 2.6083159809786593541503e-06f32;
     u = u * s + -0.0001981069071916863322258f32;
@@ -60,26 +50,6 @@ pub fn Sleef_cosf1_u35purec_range125(mut d: f32) -> f32 {
     u = u * s + -0.166666597127914428710938f32;
 
     (s * (u * d)) + d
-}
-
-#[inline(always)]
-fn vreinterpret_vm_vf_purec_scalar_sleef(f: f32) -> u64 {
-    (f.to_bits() as u64) << 32
-}
-
-#[inline(always)]
-fn vreinterpret_vf_vm_purec_scalar_sleef(vm: u64) -> f32 {
-    f32::from_bits((vm >> 32) as u32)
-}
-
-#[inline(always)]
-fn vand_vm_vo32_vm_purec_scalar_sleef(x: i32, y: u64) -> u64 {
-    vcast_vm_vo_purec_scalar_sleef(x) & y
-}
-
-#[inline(always)]
-fn vcast_vm_vo_purec_scalar_sleef(o: i32) -> u64 {
-    return o as u64 | ((o as u64) << 32);
 }
 
 #[cfg(test)]
