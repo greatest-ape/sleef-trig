@@ -2,8 +2,9 @@
 
 Rust port of a few [SLEEF](https://sleef.org) trigonometric functions:
 
-* `Sleef_sind4_u35avx`
 * `Sleef_sind1_u35purec`
+* `Sleef_sind2_u35sse2`
+* `Sleef_sind4_u35avx`
 
 Additionally, a couple of functions only valid for inputs between -125.0 and
 125.0 are provided:
