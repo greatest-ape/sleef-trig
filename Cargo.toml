@@ -11,6 +11,10 @@ name = "sind4_u35avx"
 harness = false
 
 [[bench]]
+name = "sind2_u35sse2"
+harness = false
+
+[[bench]]
 name = "sind1_u35purec"
 harness = false
 
@@ -20,6 +24,10 @@ harness = false
 
 [[bench]]
 name = "cosf1_u35purec_range125"
+harness = false
+
+[[bench]]
+name = "sleef-f64x2"
 harness = false
 
 [profile.bench]
