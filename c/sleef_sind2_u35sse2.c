@@ -11,7 +11,7 @@
 // Debug in VSCode by running "Debug C/C++ file" under play icon in top right
 // corner while in this file.
 int main(int argc, char **argv) {
-    double a = -2.604817296578813e228;
+    double a = 1.2926575274766375e38;
 
     __m128d vc = Sleef_sind2_u35sse2(_mm_set1_pd(a));
 
