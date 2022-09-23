@@ -13,7 +13,6 @@ type vopmask_sse2_sleef = __m128i;
 
 type vdouble_sse2_sleef = __m128d;
 type vint_sse2_sleef = __m128i;
-type vint2_sse2_sleef = __m128i;
 
 macro_rules! vsll_vi_vi_i_sse2_sleef {
     ($x:expr, $c:expr) => {
@@ -33,19 +32,19 @@ macro_rules! vsrl_vi_vi_i_sse2_sleef {
     };
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct vdouble2_sse2_sleef {
     x: vdouble_sse2_sleef,
     y: vdouble_sse2_sleef,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct di_t_sse2_sleef {
     d: vdouble_sse2_sleef,
     i: vint_sse2_sleef,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 struct ddi_t_sse2_sleef {
     dd_sse2_sleef: vdouble2_sse2_sleef,
     i: vint_sse2_sleef,
@@ -424,7 +423,7 @@ unsafe fn vreinterpret_vd_vm_sse2_sleef(vm: vmask_sse2_sleef) -> vdouble_sse2_sl
 
 #[inline(always)]
 unsafe fn veq_vo_vi_vi_sse2_sleef(x: vint_sse2_sleef, y: vint_sse2_sleef) -> vopmask_sse2_sleef {
-    return (_mm_cmpeq_epi32(x, y));
+    return _mm_cmpeq_epi32(x, y);
 }
 
 #[inline(always)]
@@ -538,17 +537,17 @@ unsafe fn vcastu_vi_vm_sse2_sleef(vi: vmask_sse2_sleef) -> vint_sse2_sleef {
 
 #[inline(always)]
 unsafe fn vsub_vi_vi_vi_sse2_sleef(x: vint_sse2_sleef, y: vint_sse2_sleef) -> vint_sse2_sleef {
-    return _mm_sub_epi32(x, y);
+    _mm_sub_epi32(x, y)
 }
 
 #[inline(always)]
 unsafe fn vand_vi_vo_vi_sse2_sleef(m: vopmask_sse2_sleef, y: vint_sse2_sleef) -> vint_sse2_sleef {
-    return _mm_and_si128((m), y);
+    _mm_and_si128(m, y)
 }
 
 #[inline(always)]
 unsafe fn vgt_vo_vi_vi_sse2_sleef(x: vint_sse2_sleef, y: vint_sse2_sleef) -> vopmask_sse2_sleef {
-    return (_mm_cmpgt_epi32(x, y));
+    _mm_cmpgt_epi32(x, y)
 }
 
 #[inline(always)]
@@ -556,10 +555,10 @@ unsafe fn vldexp3_vd_vd_vi_sse2_sleef(
     d: vdouble_sse2_sleef,
     q: vint_sse2_sleef,
 ) -> vdouble_sse2_sleef {
-    return vreinterpret_vd_vm_sse2_sleef(vadd64_vm_vm_vm_sse2_sleef(
+    vreinterpret_vd_vm_sse2_sleef(vadd64_vm_vm_vm_sse2_sleef(
         vreinterpret_vm_vd_sse2_sleef(d),
         vcastu_vm_vi_sse2_sleef(vsll_vi_vi_i_sse2_sleef!(q, 20)),
-    ));
+    ))
 }
 
 #[inline(always)]
@@ -574,7 +573,7 @@ unsafe fn vadd64_vm_vm_vm_sse2_sleef(x: vmask_sse2_sleef, y: vmask_sse2_sleef) -
 
 #[inline(always)]
 unsafe fn vandnot_vi_vi_vi_sse2_sleef(x: vint_sse2_sleef, y: vint_sse2_sleef) -> vint_sse2_sleef {
-    return _mm_andnot_si128(x, y);
+    _mm_andnot_si128(x, y)
 }
 
 #[inline(always)]
@@ -703,7 +702,7 @@ unsafe fn vneg_vd_vd_sse2_sleef(d: vdouble_sse2_sleef) -> vdouble_sse2_sleef {
 
 #[inline(always)]
 unsafe fn vgather_vd_p_vi_sse2_sleef(slice: &[f64], vi: vint_sse2_sleef) -> vdouble_sse2_sleef {
-    let mut a = [0; 2];
+    let mut a = [0; 4];
     vstoreu_v_p_vi_sse2_sleef(a.as_mut_ptr(), vi);
     return _mm_set_pd(
         slice.get(a[1] as usize).copied().unwrap_or(f64::NAN),
@@ -734,7 +733,10 @@ unsafe fn rempisub_sse2_sleef(x: vdouble_sse2_sleef) -> di_t_sse2_sleef {
         ),
     );
     let rintx = vsel_vd_vo_vd_vd_sse2_sleef(
-        vgt_vo_vd_vd_sse2_sleef(vabs_vd_vd_sse2_sleef(x), vcast_vd_d_sse2_sleef((1i64 << 52) as f64)),
+        vgt_vo_vd_vd_sse2_sleef(
+            vabs_vd_vd_sse2_sleef(x),
+            vcast_vd_d_sse2_sleef((1i64 << 52) as f64),
+        ),
         x,
         vorsign_vd_vd_vd_sse2_sleef(
             vsub_vd_vd_vd_sse2_sleef(vadd_vd_vd_vd_sse2_sleef(x, c), c),
@@ -834,10 +836,6 @@ mod tests {
         }
 
         fn prop(a: f64) -> TestResult {
-            // if !(a.abs() < 1e14) {
-            //     return TestResult::discard();
-            // }
-
             let (result, reference) = unsafe { (port(a), reference(a)) };
 
             let success = result
