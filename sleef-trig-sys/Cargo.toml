@@ -1,0 +1,10 @@
+[package]
+name = "sleef-trig-sys"
+version = "0.1.0"
+description = "Bindings to a few sleef.org trigonometric functions"
+edition = "2021"
+authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
+license = "BSL-1.0"
+
+[build-dependencies]
+cc = "1.0"

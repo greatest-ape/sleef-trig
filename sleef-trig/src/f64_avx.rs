@@ -890,7 +890,7 @@ mod tests {
 
         #[target_feature(enable = "avx")]
         unsafe fn reference(a: f64) -> [f64; 4] {
-            to_array(sleef_sys::Sleef_sind4_u35avx(_mm256_set1_pd(a)))
+            to_array(sleef_trig_sys::Sleef_sind4_u35avx(_mm256_set1_pd(a)))
         }
 
         #[target_feature(enable = "avx")]

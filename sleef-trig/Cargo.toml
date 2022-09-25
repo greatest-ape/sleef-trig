@@ -1,0 +1,36 @@
+[package]
+name = "sleef-trig"
+version = "0.1.0"
+description = "Port of a few sleef.org trigonometric functions"
+edition = "2021"
+authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
+license = "BSL-1.0"
+
+[[bench]]
+name = "sind4_u35avx"
+harness = false
+
+[[bench]]
+name = "sind2_u35sse2"
+harness = false
+
+[[bench]]
+name = "sind1_u35purec"
+harness = false
+
+[[bench]]
+name = "sinf1_u35purec_range125"
+harness = false
+
+[[bench]]
+name = "cosf1_u35purec_range125"
+harness = false
+
+[[bench]]
+name = "sleef-f64x2"
+harness = false
+
+[dev-dependencies]
+criterion = "0.4"
+quickcheck = "1"
+sleef-trig-sys = { version = "0.1.0", path = "../sleef-trig-sys" }

@@ -2118,7 +2118,8 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST ddi_t_sse2_sleef rempi_sse2_sleef(vdouble
   return ddisetddi_ddi_vd2_vi_sse2_sleef(x, q);
 }
 
-SLEEF_INLINE SLEEF_CONST vdouble_sse2_sleef Sleef_sind2_u35sse2(vdouble_sse2_sleef d) {
+// SLEEF_INLINE SLEEF_CONST vdouble_sse2_sleef Sleef_sind2_u35sse2(vdouble_sse2_sleef d) {
+vdouble_sse2_sleef Sleef_sind2_u35sse2(vdouble_sse2_sleef d) {
 
   vdouble_sse2_sleef u, s, r = d;
   vint_sse2_sleef ql;

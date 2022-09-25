@@ -1,34 +1,5 @@
-[package]
-name = "sleef-trig"
-version = "0.1.0"
-edition = "2021"
-authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
-license = "BSL-1.0"
-description = "Port of a few sleef.org trigonometric functions"
-
-[[bench]]
-name = "sind4_u35avx"
-harness = false
-
-[[bench]]
-name = "sind2_u35sse2"
-harness = false
-
-[[bench]]
-name = "sind1_u35purec"
-harness = false
-
-[[bench]]
-name = "sinf1_u35purec_range125"
-harness = false
-
-[[bench]]
-name = "cosf1_u35purec_range125"
-harness = false
-
-[[bench]]
-name = "sleef-f64x2"
-harness = false
+[workspace]
+members = ["sleef-trig", "sleef-trig-sys"]
 
 [profile.release]
 opt-level = 3
@@ -46,15 +17,3 @@ codegen-units = 1
 opt-level = 3
 lto = "thin"
 debug = false
-
-[dev-dependencies]
-quickcheck = "1"
-criterion = "0.4"
-
-# sleef-sys fork with static linking and avx instruction generation
-[dev-dependencies.sleef-sys]
-git = 'https://github.com/greatest-ape/sleef-sys.git'
-rev = "9625d96e64bc83ec18202e206c5fe1e5423df35b" # branch: octasine
-features = ["static"]
-
-[dependencies]

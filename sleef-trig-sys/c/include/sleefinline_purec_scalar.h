@@ -2045,7 +2045,8 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST ddi_t_purec_scalar_sleef rempi_purec_scal
   return ddisetddi_ddi_vd2_vi_purec_scalar_sleef(x, q);
 }
 
-SLEEF_INLINE SLEEF_CONST vdouble_purec_scalar_sleef Sleef_sind1_u35purec(vdouble_purec_scalar_sleef d) {
+// SLEEF_INLINE SLEEF_CONST vdouble_purec_scalar_sleef Sleef_sind1_u35purec(vdouble_purec_scalar_sleef d) {
+vdouble_purec_scalar_sleef Sleef_sind1_u35purec(vdouble_purec_scalar_sleef d) {
 
   vdouble_purec_scalar_sleef u, s, r = d;
   vint_purec_scalar_sleef ql;
@@ -4604,7 +4605,8 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST dfi_t_purec_scalar_sleef rempif_purec_sca
   return dfisetdfi_dfi_vf2_vi2_purec_scalar_sleef(x, q);
 }
 
-SLEEF_INLINE SLEEF_CONST vfloat_purec_scalar_sleef Sleef_sinf1_u35purec(vfloat_purec_scalar_sleef d) {
+// SLEEF_INLINE SLEEF_CONST vfloat_purec_scalar_sleef Sleef_sinf1_u35purec(vfloat_purec_scalar_sleef d) {
+vfloat_purec_scalar_sleef Sleef_sinf1_u35purec(vfloat_purec_scalar_sleef d) {
 
   vint2_purec_scalar_sleef q;
   vfloat_purec_scalar_sleef u, s, r = d;
@@ -4654,7 +4656,8 @@ SLEEF_INLINE SLEEF_CONST vfloat_purec_scalar_sleef Sleef_sinf1_u35purec(vfloat_p
 
 }
 
-SLEEF_INLINE SLEEF_CONST vfloat_purec_scalar_sleef Sleef_cosf1_u35purec(vfloat_purec_scalar_sleef d) {
+// SLEEF_INLINE SLEEF_CONST vfloat_purec_scalar_sleef Sleef_cosf1_u35purec(vfloat_purec_scalar_sleef d) {
+vfloat_purec_scalar_sleef Sleef_cosf1_u35purec(vfloat_purec_scalar_sleef d) {
 
   vint2_purec_scalar_sleef q;
   vfloat_purec_scalar_sleef u, s, r = d;
