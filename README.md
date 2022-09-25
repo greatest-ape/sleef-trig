@@ -26,13 +26,15 @@ codegen-units = 1
 
 ### Running tests and benchmarks
 
-Running tests and benchmarks requires nightly Rust and relies on the
-`sleef-trig-sys` crate for SLEEF bindings.
+Run:
 
 ```sh
 cargo test
 cargo bench
 ```
+
+Running tests and benchmarks requires nightly Rust and relies on
+`sleef-trig-sys` for SLEEF bindings.
 
 ## Why not just link to SLEEF?
 
