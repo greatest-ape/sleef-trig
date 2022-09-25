@@ -7,27 +7,19 @@ authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
 
 [[bench]]
-name = "sind4_u35avx"
+name = "f32_purec"
 harness = false
 
 [[bench]]
-name = "sind2_u35sse2"
+name = "f64_purec"
 harness = false
 
 [[bench]]
-name = "sind1_u35purec"
+name = "f64_sse2"
 harness = false
 
 [[bench]]
-name = "sinf1_u35purec_range125"
-harness = false
-
-[[bench]]
-name = "cosf1_u35purec_range125"
-harness = false
-
-[[bench]]
-name = "sleef-f64x2"
+name = "f64_avx"
 harness = false
 
 [dev-dependencies]
