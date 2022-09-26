@@ -34,7 +34,7 @@
 
 #ifndef __SLEEF_REMPITAB__
 #define __SLEEF_REMPITAB__
-const double Sleef_rempitabdp[] = {
+const double Sleef_rempitabdp_sse2[] = {
   0.15915494309189531785, 1.7916237278037667488e-17, 2.5454160968749269937e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
@@ -1135,7 +1135,7 @@ typedef Sleef_uint64_2t Sleef_quad;
 #endif
 #endif
 
-extern const double Sleef_rempitabdp[];
+extern const double Sleef_rempitabdp_sse2[];
 
 typedef __m128i vmask_sse2_sleef;
 typedef __m128i vopmask_sse2_sleef;
@@ -2096,18 +2096,18 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST ddi_t_sse2_sleef rempi_sse2_sleef(vdouble
   a = vldexp3_vd_vd_vi_sse2_sleef(a, q);
   ex = vandnot_vi_vi_vi_sse2_sleef(vsra_vi_vi_i_sse2_sleef(ex, 31), ex);
   ex = vsll_vi_vi_i_sse2_sleef(ex, 2);
-  x = ddmul_vd2_vd_vd_sse2_sleef(a, vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp, ex));
+  x = ddmul_vd2_vd_vd_sse2_sleef(a, vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp_sse2, ex));
   di_t_sse2_sleef di = rempisub_sse2_sleef(vd2getx_vd_vd2_sse2_sleef(x));
   q = digeti_vi_di_sse2_sleef(di);
   x = vd2setx_vd2_vd2_vd_sse2_sleef(x, digetd_vd_di_sse2_sleef(di));
   x = ddnormalize_vd2_vd2_sse2_sleef(x);
-  y = ddmul_vd2_vd_vd_sse2_sleef(a, vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp+1, ex));
+  y = ddmul_vd2_vd_vd_sse2_sleef(a, vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp_sse2+1, ex));
   x = ddadd2_vd2_vd2_vd2_sse2_sleef(x, y);
   di = rempisub_sse2_sleef(vd2getx_vd_vd2_sse2_sleef(x));
   q = vadd_vi_vi_vi_sse2_sleef(q, digeti_vi_di_sse2_sleef(di));
   x = vd2setx_vd2_vd2_vd_sse2_sleef(x, digetd_vd_di_sse2_sleef(di));
   x = ddnormalize_vd2_vd2_sse2_sleef(x);
-  y = vcast_vd2_vd_vd_sse2_sleef(vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp+2, ex), vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp+3, ex));
+  y = vcast_vd2_vd_vd_sse2_sleef(vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp_sse2+2, ex), vgather_vd_p_vi_sse2_sleef(Sleef_rempitabdp_sse2+3, ex));
   y = ddmul_vd2_vd2_vd_sse2_sleef(y, a);
   x = ddadd2_vd2_vd2_vd2_sse2_sleef(x, y);
   x = ddnormalize_vd2_vd2_sse2_sleef(x);

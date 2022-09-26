@@ -34,7 +34,7 @@
 
 #ifndef __SLEEF_REMPITAB__
 #define __SLEEF_REMPITAB__
-const double Sleef_rempitabdp[] = {
+const double Sleef_rempitabdp_purec[] = {
   0.15915494309189531785, 1.7916237278037667488e-17, 2.5454160968749269937e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
@@ -1135,7 +1135,7 @@ typedef Sleef_uint64_2t Sleef_quad;
 #endif
 #endif
 
-extern const double Sleef_rempitabdp[];
+extern const double Sleef_rempitabdp_purec[];
 
 typedef uint64_t vmask_purec_scalar_sleef;
 typedef uint32_t vopmask_purec_scalar_sleef;
@@ -2023,18 +2023,18 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST ddi_t_purec_scalar_sleef rempi_purec_scal
   a = vldexp3_vd_vd_vi_purec_scalar_sleef(a, q);
   ex = vandnot_vi_vi_vi_purec_scalar_sleef(vsra_vi_vi_i_purec_scalar_sleef(ex, 31), ex);
   ex = vsll_vi_vi_i_purec_scalar_sleef(ex, 2);
-  x = ddmul_vd2_vd_vd_purec_scalar_sleef(a, vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp, ex));
+  x = ddmul_vd2_vd_vd_purec_scalar_sleef(a, vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp_purec, ex));
   di_t_purec_scalar_sleef di = rempisub_purec_scalar_sleef(vd2getx_vd_vd2_purec_scalar_sleef(x));
   q = digeti_vi_di_purec_scalar_sleef(di);
   x = vd2setx_vd2_vd2_vd_purec_scalar_sleef(x, digetd_vd_di_purec_scalar_sleef(di));
   x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
-  y = ddmul_vd2_vd_vd_purec_scalar_sleef(a, vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp+1, ex));
+  y = ddmul_vd2_vd_vd_purec_scalar_sleef(a, vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp_purec+1, ex));
   x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
   di = rempisub_purec_scalar_sleef(vd2getx_vd_vd2_purec_scalar_sleef(x));
   q = vadd_vi_vi_vi_purec_scalar_sleef(q, digeti_vi_di_purec_scalar_sleef(di));
   x = vd2setx_vd2_vd2_vd_purec_scalar_sleef(x, digetd_vd_di_purec_scalar_sleef(di));
   x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);
-  y = vcast_vd2_vd_vd_purec_scalar_sleef(vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp+2, ex), vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp+3, ex));
+  y = vcast_vd2_vd_vd_purec_scalar_sleef(vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp_purec+2, ex), vgather_vd_p_vi_purec_scalar_sleef(Sleef_rempitabdp_purec+3, ex));
   y = ddmul_vd2_vd2_vd_purec_scalar_sleef(y, a);
   x = ddadd2_vd2_vd2_vd2_purec_scalar_sleef(x, y);
   x = ddnormalize_vd2_vd2_purec_scalar_sleef(x);

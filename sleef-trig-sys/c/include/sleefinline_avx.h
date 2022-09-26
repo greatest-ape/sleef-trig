@@ -34,7 +34,7 @@
 
 #ifndef __SLEEF_REMPITAB__
 #define __SLEEF_REMPITAB__
-const double Sleef_rempitabdp[] = {
+const double Sleef_rempitabdp_avx[] = {
   0.15915494309189531785, 1.7916237278037667488e-17, 2.5454160968749269937e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
   0.03415494309189533173, 4.0384494702232122736e-18, 1.0046721413651383112e-33, 2.1132476107887107169e-49,
@@ -1135,7 +1135,7 @@ typedef Sleef_uint64_2t Sleef_quad;
 #endif
 #endif
 
-extern const double Sleef_rempitabdp[];
+extern const double Sleef_rempitabdp_avx[];
 
 typedef __m256i vmask_avx_sleef;
 typedef __m256i vopmask_avx_sleef;
@@ -2198,18 +2198,18 @@ static SLEEF_ALWAYS_INLINE SLEEF_CONST ddi_t_avx_sleef rempi_avx_sleef(vdouble_a
   a = vldexp3_vd_vd_vi_avx_sleef(a, q);
   ex = vandnot_vi_vi_vi_avx_sleef(vsra_vi_vi_i_avx_sleef(ex, 31), ex);
   ex = vsll_vi_vi_i_avx_sleef(ex, 2);
-  x = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp, ex));
+  x = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp_avx, ex));
   di_t_avx_sleef di = rempisub_avx_sleef(vd2getx_vd_vd2_avx_sleef(x));
   q = digeti_vi_di_avx_sleef(di);
   x = vd2setx_vd2_vd2_vd_avx_sleef(x, digetd_vd_di_avx_sleef(di));
   x = ddnormalize_vd2_vd2_avx_sleef(x);
-  y = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp+1, ex));
+  y = ddmul_vd2_vd_vd_avx_sleef(a, vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp_avx+1, ex));
   x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
   di = rempisub_avx_sleef(vd2getx_vd_vd2_avx_sleef(x));
   q = vadd_vi_vi_vi_avx_sleef(q, digeti_vi_di_avx_sleef(di));
   x = vd2setx_vd2_vd2_vd_avx_sleef(x, digetd_vd_di_avx_sleef(di));
   x = ddnormalize_vd2_vd2_avx_sleef(x);
-  y = vcast_vd2_vd_vd_avx_sleef(vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp+2, ex), vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp+3, ex));
+  y = vcast_vd2_vd_vd_avx_sleef(vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp_avx+2, ex), vgather_vd_p_vi_avx_sleef(Sleef_rempitabdp_avx+3, ex));
   y = ddmul_vd2_vd2_vd_avx_sleef(y, a);
   x = ddadd2_vd2_vd2_vd2_avx_sleef(x, y);
   x = ddnormalize_vd2_vd2_avx_sleef(x);
