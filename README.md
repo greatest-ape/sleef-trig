@@ -1,5 +1,7 @@
 # sleef-trig
 
+[![CI](https://github.com/greatest-ape/sleef-trig/actions/workflows/ci.yml/badge.svg)](https://github.com/greatest-ape/sleef-trig/actions/workflows/ci.yml)
+
 Rust port of a few [SLEEF](https://sleef.org) trigonometric functions:
 
 * `Sleef_sind1_u35purec`
