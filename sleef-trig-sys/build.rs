@@ -6,6 +6,7 @@ fn main() {
 
     Build::new()
         .file("./c/purec.c")
+        .flag("-ffp-contract=off")
         .warnings(false)
         .compile("sleef_trig_purec");
 
@@ -13,6 +14,7 @@ fn main() {
     Build::new()
         .file("./c/sse2.c")
         .flag("-msse2")
+        .flag("-ffp-contract=off")
         .warnings(false)
         .compile("sleef_trig_sse2");
 
@@ -20,6 +22,7 @@ fn main() {
     Build::new()
         .file("./c/avx.c")
         .flag("-mavx")
+        .flag("-ffp-contract=off")
         .warnings(false)
         .compile("sleef_trig_avx");
 }
