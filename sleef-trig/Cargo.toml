@@ -5,6 +5,7 @@ description = "Port of a few sleef.org trigonometric functions"
 edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
+readme = "../README.md"
 
 [[bench]]
 name = "f32_purec"
