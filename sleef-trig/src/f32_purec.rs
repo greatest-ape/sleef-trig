@@ -64,7 +64,7 @@ mod tests {
             }
 
             let result = super::Sleef_sinf1_u35purec_range125(a);
-            let reference = unsafe { sleef_sys::Sleef_sinf1_u35purec(a) };
+            let reference = unsafe { sleef_trig_sys::Sleef_sinf1_u35purec(a) };
 
             let success = result == reference;
 
@@ -89,7 +89,7 @@ mod tests {
             }
 
             let result = super::Sleef_cosf1_u35purec_range125(a);
-            let reference = unsafe { sleef_sys::Sleef_cosf1_u35purec(a) };
+            let reference = unsafe { sleef_trig_sys::Sleef_cosf1_u35purec(a) };
 
             let success = result == reference;
 

@@ -397,7 +397,7 @@ mod tests {
     fn test_sind1_u35purec() {
         fn prop(a: f64) -> TestResult {
             let result = super::Sleef_sind1_u35purec(a);
-            let reference = unsafe { sleef_sys::Sleef_sind1_u35purec(a) };
+            let reference = unsafe { sleef_trig_sys::Sleef_sind1_u35purec(a) };
 
             let success = result == reference || (result.is_nan() && reference.is_nan());
 

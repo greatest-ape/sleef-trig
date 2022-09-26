@@ -14,7 +14,7 @@ Additionally, a couple of functions only valid for inputs between -125.0 and
 
 ## Usage
 
-To use this crate, add it to your `Cargo.toml` file as a dependency.
+To use this crate, add `sleef-trig` as a dependency to your `Cargo.toml` file.
 
 For optimal performance, compile sleef-trig with `codegen-units = 1` by adding
 the following to `Cargo.toml` (once for each performance sensitive profile):
@@ -24,6 +24,18 @@ the following to `Cargo.toml` (once for each performance sensitive profile):
 codegen-units = 1
 ```
 
-## Why not just link to sleef?
+### Running tests and benchmarks
+
+Run:
+
+```sh
+cargo test
+cargo bench
+```
+
+Running tests and benchmarks requires nightly Rust and relies on
+`sleef-trig-sys` for SLEEF bindings.
+
+## Why not just link to SLEEF?
 
 SIMD FFI is [unstable and relies on undefined behaviour](https://github.com/rust-lang/rust/issues/63068).

@@ -828,7 +828,7 @@ mod tests {
         }
 
         unsafe fn reference(a: f64) -> [f64; 2] {
-            to_array(sleef_sys::Sleef_sind2_u35sse2(_mm_set_pd(a, a + 1.0)))
+            to_array(sleef_trig_sys::Sleef_sind2_u35sse2(_mm_set_pd(a, a + 1.0)))
         }
 
         unsafe fn port(a: f64) -> [f64; 2] {
