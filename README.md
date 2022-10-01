@@ -4,15 +4,21 @@
 
 Rust port of a few [SLEEF](https://sleef.org) trigonometric functions:
 
-* `Sleef_sind1_u35purec`
-* `Sleef_sind2_u35sse2`
-* `Sleef_sind4_u35avx`
+* `Sleef_sind1_u35purec` (approximately 15-30% slower than sleef function)
+* `Sleef_sind2_u35sse2` (approximately 15-20% slower than sleef function)
+* `Sleef_sind4_u35avx` (approximately 5-10% slower than sleef function)
+
+The performance differences are the largest for inputs with high absolute
+values, notably equal to or greater than 1e14.
 
 Additionally, a couple of functions only valid for inputs between -125.0 and
 125.0 are provided:
 
 * `Sleef_sinf1_u35purec_range125`
 * `Sleef_cosf1_u35purec_range125`
+
+Both are around 30x faster than the equivalent (unlimited range) sleef
+functions.
 
 ## Usage
 
