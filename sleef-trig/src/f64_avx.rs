@@ -56,6 +56,12 @@ struct ddi_t_avx_sleef {
     i: vint_avx_sleef,
 }
 
+/// Evaluate the sine function with an error bound of 3.5 ULP.
+///
+/// # Safety
+///
+/// Only call this function if you know for sure that your processor supports
+/// the AVX instruction set.
 #[target_feature(enable = "avx")]
 pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
     let r = d;

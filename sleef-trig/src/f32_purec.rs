@@ -4,7 +4,8 @@
 
 #![allow(non_snake_case)]
 
-/// Like Sleef_sinf1_u35purec but only valid for d where d.abs() < 125.0
+/// Evaluate the sine function with an error bound of 3.5 ULP. Only valid for
+/// inputs within (-125.0, 125.0).
 pub fn Sleef_sinf1_u35purec_range125(mut d: f32) -> f32 {
     let r = d;
 
@@ -30,7 +31,8 @@ pub fn Sleef_sinf1_u35purec_range125(mut d: f32) -> f32 {
     return u;
 }
 
-/// Like Sleef_cosf1_u35purec but only valid for d where d.abs() < 125.0
+/// Evaluate the cosine function with an error bound of 3.5 ULP. Only valid for
+/// inputs within (-125.0, 125.0).
 pub fn Sleef_cosf1_u35purec_range125(mut d: f32) -> f32 {
     let mut q = ((d * 0.318309886183790671537767526745028724 as f32) - 0.5f32).round() as i32;
     q = (q + q) + 1;

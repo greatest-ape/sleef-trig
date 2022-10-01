@@ -29,6 +29,7 @@ struct di_t_purec_scalar_sleef {
     i: vint_purec_scalar_sleef,
 }
 
+/// Evaluate the sine function with an error bound of 3.5 ULP.
 pub fn Sleef_sind1_u35purec(mut d: f64) -> f64 {
     let r = d;
 

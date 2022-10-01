@@ -50,6 +50,7 @@ struct ddi_t_sse2_sleef {
     i: vint_sse2_sleef,
 }
 
+/// Evaluate the sine function with an error bound of 3.5 ULP.
 #[target_feature(enable = "sse2")]
 pub unsafe fn Sleef_sind2_u35sse2(mut d: __m128d) -> __m128d {
     let r = d;
