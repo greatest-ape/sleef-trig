@@ -54,6 +54,7 @@ struct ddi_t_sse2_sleef {
 }
 
 /// Evaluate the sine function with an error bound of 3.5 ULP.
+#[inline]
 pub fn Sleef_sind2_u35sse2(d: __m128d) -> __m128d {
     // Safe because SSE2 is always supported on x86_64, which is the only
     // platform on which this module is compiled

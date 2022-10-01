@@ -63,6 +63,7 @@ struct ddi_t_avx_sleef {
 /// Only call this function if you know for sure that your processor supports
 /// the AVX instruction set.
 #[target_feature(enable = "avx")]
+#[inline]
 pub unsafe fn Sleef_sind4_u35avx(mut d: __m256d) -> __m256d {
     let r = d;
 
