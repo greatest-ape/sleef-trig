@@ -4,6 +4,9 @@
 
 #![allow(non_camel_case_types, non_snake_case)]
 
+#[cfg(not(target_arch = "x86_64"))]
+compile_error!("Attempted to compile the SSE2 implementation on a target arch other than x86_64");
+
 use core::arch::x86_64::*;
 
 use super::f64_tables::*;
@@ -50,8 +53,16 @@ struct ddi_t_sse2_sleef {
     i: vint_sse2_sleef,
 }
 
-#[target_feature(enable = "sse2")]
-pub unsafe fn Sleef_sind2_u35sse2(mut d: __m128d) -> __m128d {
+/// Evaluate the sine function with an error bound of 3.5 ULP.
+#[inline]
+pub fn Sleef_sind2_u35sse2(d: __m128d) -> __m128d {
+    // Safe because SSE2 is always supported on x86_64, which is the only
+    // platform on which this module is compiled
+    unsafe { Sleef_sind2_u35sse2_inner(d) }
+}
+
+#[inline(always)]
+unsafe fn Sleef_sind2_u35sse2_inner(mut d: __m128d) -> __m128d {
     let r = d;
 
     let ql = if (vtestallones_i_vo64_sse2_sleef(vlt_vo_vd_vd_sse2_sleef(

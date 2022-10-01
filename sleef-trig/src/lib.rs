@@ -1,3 +1,5 @@
+//! Rust port of a few [SLEEF](https://sleef.org) trigonometric functions.
+
 mod f32_purec;
 #[cfg(target_arch = "x86_64")]
 mod f64_avx;
