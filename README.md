@@ -4,9 +4,9 @@
 
 Rust port of a few [SLEEF](https://sleef.org) trigonometric functions:
 
-* `Sleef_sind1_u35purec` (approximately 15-30% slower than sleef function)
-* `Sleef_sind2_u35sse2` (approximately 15-20% slower than sleef function)
-* `Sleef_sind4_u35avx` (approximately 5-10% slower than sleef function)
+* `Sleef_sind1_u35purec` (approximately 15-30% slower than original)
+* `Sleef_sind2_u35sse2` (approximately 15-20% slower than original)
+* `Sleef_sind4_u35avx` (approximately 5-10% slower than original)
 
 The performance differences are the largest for inputs with high absolute
 values, notably equal to or greater than 1e14.
