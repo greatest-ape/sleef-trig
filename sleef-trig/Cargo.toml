@@ -6,6 +6,10 @@ edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
 readme = "../README.md"
+repository = "https://github.com/greatest-ape/sleef-trig"
+keywords = ["math", "trigonometry", "audio"]
+categories = ["mathematics"]
+
 
 [[bench]]
 name = "f32_purec"

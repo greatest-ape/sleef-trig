@@ -5,6 +5,10 @@ description = "Bindings to a few sleef.org trigonometric functions"
 edition = "2021"
 authors = ["Joakim Frostegård <joakim.frostegard@gmail.com>"]
 license = "BSL-1.0"
+readme = "README.md"
+repository = "https://github.com/greatest-ape/sleef-trig"
+keywords = ["math", "trigonometry", "audio", "ffi"]
+categories = ["mathematics", "external-ffi-bindings"]
 
 [build-dependencies]
 cc = "1.0"
