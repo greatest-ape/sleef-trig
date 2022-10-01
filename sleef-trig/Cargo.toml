@@ -9,7 +9,7 @@ readme = "../README.md"
 repository = "https://github.com/greatest-ape/sleef-trig"
 keywords = ["math", "trigonometry", "audio"]
 categories = ["mathematics"]
-
+exclude = ["./src/main.rs"]
 
 [[bench]]
 name = "f32_purec"
